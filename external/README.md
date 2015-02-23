@@ -1,0 +1,1 @@
+This is a temporary directory containing WinJS 4.0 binaries for usage in this project's unit tests. This will be removed and replaced with a package.json dependency once WinJS 4.0 has been published.

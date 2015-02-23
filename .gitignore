@@ -1,0 +1,8 @@
+node_modules/
+
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.tmp.txt
+.DS_Store
