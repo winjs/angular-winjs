@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+    <metadata>
+        <id>Angular.WinJS</id>
+        <version>2.0.0</version>
+        <authors>Microsoft Corporation and other contributors</authors>
+        <licenseUrl>https://raw.githubusercontent.com/winjs/angular-winjs/master/License.txt</licenseUrl>
+        <projectUrl>https://github.com/winjs/angular-winjs</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>This code is a wrapper which facilitates usage of WinJS UI controls in an Angular application.</description>
+        <copyright>Microsoft Corporation. All Rights Reserved</copyright>
+        <tags>winjs angular</tags>
+    </metadata>
+    <files>
+        <file src="..\js\angular-winjs.js" target="content\angular-winjs.js" />
+    </files>
+</package>
