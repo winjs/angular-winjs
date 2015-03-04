@@ -368,7 +368,7 @@
             case "ms-appx:":
             case "ms-appx-web:":
                 // Whitelist the Windows Runtime URL schemes so Angular does not flag as 'unsafe'.
-                var whitelist = /^\s*(https|ms-appx|ms-appx-web|ms-appdata):/i;
+                var whitelist = /^\s*(http|https|ms-appx|ms-appx-web|ms-appdata):/i;
                 $compileProvider.imgSrcSanitizationWhitelist(whitelist);
                 $compileProvider.aHrefSanitizationWhitelist(whitelist);
                 break;
