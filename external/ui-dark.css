@@ -2827,8 +2827,8 @@ button.win-navigation-backbutton:enabled:hover:active {
   -ms-flex-wrap: none;
   -webkit-flex-wrap: nowrap;
   flex-wrap: nowrap;
-  height: 100%;
-  width: 100%;
+  height: 100vh;
+  width: 100vw;
   overflow: hidden;
   -ms-scroll-limit-x-max: 0px;
   touch-action: manipulation;
