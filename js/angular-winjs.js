@@ -1447,6 +1447,35 @@
         };
     });
 
+    exists("ToolBar") && module.directive("winToolBarSeparator", function () {
+        var api = {
+            disabled: BINDING_property,
+            extraClass: BINDING_property,
+            firstElementFocus: BINDING_property,
+            flyout: BINDING_property,
+            hidden: BINDING_property,
+            icon: BINDING_property,
+            id: BINDING_property,
+            label: BINDING_property,
+            lastElementFocus: BINDING_property,
+            section: BINDING_property,
+            selected: BINDING_property,
+            tooltip: BINDING_property,
+            type: BINDING_property,
+            onClick: BINDING_event
+        };
+        return {
+            restrict: "E",
+            replace: true,
+            scope: getScopeForAPI(api),
+            template: "<HR ng-transclude='true'></HR>",
+            transclude: true,
+            link: function ($scope, elements) {
+                initializeControl($scope, elements[0], WinJS.UI.Command, api, { type: "separator" });
+            }
+        };
+    });
+
     exists("ToolBar") && module.directive("winToolBarContent", function () {
         var api = {
             disabled: BINDING_property,
