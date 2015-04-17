@@ -23,9 +23,12 @@ Examples of control usage
 
     <!-- Shows up on the bottom of the screen, use right-click or touch edgy gesture to show -->
     <win-app-bar>
-        <win-app-bar-command icon="'home'" label="'Home'"></win-app-bar-command>
+	    <win-app-bar-command icon="'home'" label="'Home'"></win-app-bar-command>
         <win-app-bar-command icon="'save'" label="'Save'"></win-app-bar-command>
-    </win-app-bar>
+	    <win-app-bar-content>
+            <win-search-box placeholder-text="'Search'"></win-search-box>
+	    </win-app-bar-content>
+	</win-app-bar>
 
 ### DatePicker
 
