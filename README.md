@@ -146,6 +146,7 @@ Examples of control usage
 
     <win-tool-bar>
         <win-tool-bar-command label="'This is a ToolBar command'" icon="'add'"></win-tool-bar-command>
+        <win-app-bar-separator></win-app-bar-separator>
         <win-tool-bar-content>
             <win-search-box placeholder-text="'Search'"></win-search-box>
         </win-tool-bar-content>
