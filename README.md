@@ -26,6 +26,12 @@ Examples of control usage
         <win-app-bar-command icon="'home'" label="'Home'"></win-app-bar-command>
         <win-app-bar-command icon="'save'" label="'Save'"></win-app-bar-command>
     </win-app-bar>
+    
+### Content Dialog
+
+    <win-content-dialog primary-command-text="'Primary Command'" secondary-command-text="'Secondary Command '" title="'Title'">
+        Add your content here
+    </win-content-dialog>
 
 ### DatePicker
 
