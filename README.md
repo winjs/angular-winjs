@@ -30,6 +30,12 @@ Examples of control usage
             <win-search-box placeholder-text="'Search'"></win-search-box>
         </win-app-bar-content>
     </win-app-bar>
+    
+### Content Dialog
+
+    <win-content-dialog primary-command-text="'Primary Command'" secondary-command-text="'Secondary Command '" title="'Title'">
+        Add your content here
+    </win-content-dialog>
 
 ### DatePicker
 
