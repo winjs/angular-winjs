@@ -1119,7 +1119,7 @@
                         } else {
                             f();
                         }
-                    }
+                    };
                 }
                 this.addItem = deferred(function (item, index) {
                     $scope.addItem(item, index);
@@ -1136,6 +1136,13 @@
                 itemsHost.parentNode.removeChild(itemsHost);
                 var control = initializeControl($scope, element, WinJS.UI.Pivot, api);
 
+		control.addEventListener("selectionchanged", function () {
+                    apply($scope, function () {
+                        $scope["selectedItem"] = control["selectedItem"];
+                        $scope["selectedIndex"] = control["selectedIndex"];
+                    });
+                });
+ 
                 element.appendChild(itemsHost);
                 $scope.addItem = function (item, index) {
                     control.items.splice(index, 0, item);
