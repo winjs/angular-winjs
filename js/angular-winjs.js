@@ -380,7 +380,7 @@
         var Scope$eval = Scope.$eval;
         Scope.$eval = function (expr, locals) {
             var that = this;
-            if (window.MSApp) {
+            if (window.MSApp && MSApp.execUnsafeLocalFunction) {
                 return MSApp.execUnsafeLocalFunction(function () {
                     return Scope$eval.call(that, expr, locals);
                 });
