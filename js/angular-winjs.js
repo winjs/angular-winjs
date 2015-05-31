@@ -518,6 +518,36 @@
             }
         };
     });
+	
+	exists("AutoSuggestBox") && module.directive("winAutoSuggestBox", function () {
+        var api = {
+            chooseSuggestionOnEnter: BINDING_property,
+            disabled: BINDING_property,
+            placeholderText: BINDING_property,
+            queryText: BINDING_property,
+            searchHistoryContext: BINDING_property,
+            searchHistoryDisabled: BINDING_property,
+            onQueryChanged: BINDING_event,
+            onQuerySubmitted: BINDING_event,
+            onResultSuggestionChosen: BINDING_event,
+            onSuggestionsRequested: BINDING_event
+        };
+        return {
+            restrict: "E",
+            replace: true,
+            scope: getScopeForAPI(api),
+            template: "<DIV></DIV>",
+            link: function ($scope, elements, attrs) {
+                var control = initializeControl($scope, elements[0], WinJS.UI.SearchBox, api);
+
+                control.addEventListener("querychanged", function () {
+                    apply($scope, function () {
+                        $scope["queryText"] = control["queryText"];
+                    });
+                });
+            }
+        };
+    });
 
     exists("BackButton") && module.directive("winBackButton", function () {
         return {
