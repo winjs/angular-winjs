@@ -519,7 +519,7 @@
         };
     });
 	
-	exists("AutoSuggestBox") && module.directive("winAutoSuggestBox", function () {
+    exists("AutoSuggestBox") && module.directive("winAutoSuggestBox", function () {
         var api = {
             chooseSuggestionOnEnter: BINDING_property,
             disabled: BINDING_property,
@@ -538,7 +538,7 @@
             scope: getScopeForAPI(api),
             template: "<DIV></DIV>",
             link: function ($scope, elements, attrs) {
-                var control = initializeControl($scope, elements[0], WinJS.UI.SearchBox, api);
+                var control = initializeControl($scope, elements[0], WinJS.UI.AutoSuggestBox, api);
 
                 control.addEventListener("querychanged", function () {
                     apply($scope, function () {
