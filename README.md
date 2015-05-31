@@ -30,6 +30,12 @@ Examples of control usage
             <win-search-box placeholder-text="'Search'"></win-search-box>
         </win-app-bar-content>
     </win-app-bar>
+
+### AutoSuggestionBox
+
+    The current query text is: {{queryText}}.<br/>
+    <win-auto-suggest-box query-text="queryText"></win-auto-suggest-box>
+
     
 ### Content Dialog
 
