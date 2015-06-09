@@ -380,7 +380,7 @@
         var Scope$eval = Scope.$eval;
         Scope.$eval = function (expr, locals) {
             var that = this;
-            if (window.MSApp) {
+            if (window.MSApp && MSApp.execUnsafeLocalFunction) {
                 return MSApp.execUnsafeLocalFunction(function () {
                     return Scope$eval.call(that, expr, locals);
                 });
@@ -515,6 +515,36 @@
             transclude: true,
             link: function ($scope, elements) {
                 initializeControl($scope, elements[0], WinJS.UI.Command, api, { type: "content" });
+            }
+        };
+    });
+    
+    exists("AutoSuggestBox") && module.directive("winAutoSuggestBox", function () {
+        var api = {
+            chooseSuggestionOnEnter: BINDING_property,
+            disabled: BINDING_property,
+            placeholderText: BINDING_property,
+            queryText: BINDING_property,
+            searchHistoryContext: BINDING_property,
+            searchHistoryDisabled: BINDING_property,
+            onQueryChanged: BINDING_event,
+            onQuerySubmitted: BINDING_event,
+            onResultSuggestionChosen: BINDING_event,
+            onSuggestionsRequested: BINDING_event
+        };
+        return {
+            restrict: "E",
+            replace: true,
+            scope: getScopeForAPI(api),
+            template: "<DIV></DIV>",
+            link: function ($scope, elements, attrs) {
+                var control = initializeControl($scope, elements[0], WinJS.UI.AutoSuggestBox, api);
+
+                control.addEventListener("querychanged", function () {
+                    apply($scope, function () {
+                        $scope["queryText"] = control["queryText"];
+                    });
+                });
             }
         };
     });

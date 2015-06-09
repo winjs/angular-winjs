@@ -31,6 +31,18 @@ Examples of control usage
         </win-app-bar-content>
     </win-app-bar>
 
+### AutoSuggestionBox
+
+    The current query text is: {{queryText}}.<br/>
+    <win-auto-suggest-box query-text="queryText"></win-auto-suggest-box>
+
+    
+### Content Dialog
+
+    <win-content-dialog primary-command-text="'Primary Command'" secondary-command-text="'Secondary Command '" title="'Title'">
+        Add your content here
+    </win-content-dialog>
+
 ### DatePicker
 
     <win-date-picker current="date" on-change="dateChanged()"></win-date-picker>
