@@ -148,6 +148,17 @@ describe("Pivot control directive tests", function () {
         }, "the Pivot to fire animation events", testTimeout);
     });
 
+    it("should use the custom header attributes", function () {
+        scope.customLeftHeader = document.createElement("div");
+        scope.customRightHeader = document.createElement("div");
+        var control = initControl("<win-pivot custom-left-header='customLeftHeader' custom-right-header='customRightHeader'>" +
+                                              "<win-pivot-item>Item1</win-pivot-item>" +
+                                          "</win-pivot>").winControl;
+
+        expect(control.customLeftHeader).toEqual(scope.customLeftHeader);
+        expect(control.customRightHeader).toEqual(scope.customRightHeader);
+    });
+
     afterEach(function () {
         var controls = document.querySelectorAll(".win-pivot");
         for (var i = 0; i < controls.length; i++) {

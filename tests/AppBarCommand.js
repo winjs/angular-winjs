@@ -104,7 +104,38 @@ describe("AppBarCommand control directive tests", function () {
         expect(escape(commandImage.innerHTML)).toEqual("%uE109");
     });
 
-    // TODO: Write tests for type attribute, firstElementFocus, lastElementFocus, flyout, selected (must be type=toggle), separator, and tooltip once type attribute issues are resolved
+    it("should use the win-app-bar command types", function () {
+        var compiledControl = initControl("<win-app-bar>" +
+                                              "<win-app-bar-separator></win-app-bar-separator>" +
+                                              "<win-app-bar-content></win-app-bar-content>" +
+                                          "</win-app-bar>");
+
+        var commands = compiledControl.querySelectorAll(".win-command");
+        expect(commands[0].winControl.type).toEqual("separator");
+        expect(commands[1].winControl.type).toEqual("content");
+    });
+
+    it("should use the priority attribute", function () {
+        var compiledControl = initControl("<win-app-bar>" +
+                                              "<win-app-bar-command priority='1'></win-app-bar-command>" +
+                                              "<win-app-bar-command priority='2'></win-app-bar-command>" +
+                                          "</win-app-bar>");
+
+        var commands = compiledControl.querySelectorAll(".win-command");
+        expect(commands[0].winControl.priority).toEqual(1);
+        expect(commands[1].winControl.priority).toEqual(2);
+    });
+
+    it("should use the flyout attribute", function () {
+        scope.flyout = new WinJS.UI.Flyout();
+        var compiledControl = initControl("<win-app-bar>" +
+                                              "<win-app-bar-command flyout='flyout'></win-app-bar-command>" +
+                                          "</win-app-bar>");
+
+        var commands = compiledControl.querySelectorAll(".win-command");
+        expect(commands[0].winControl.flyout).toEqual(scope.flyout);
+    });
+
     afterEach(function () {
         var controls = document.querySelectorAll(".win-appbar");
         for (var i = 0; i < controls.length; i++) {

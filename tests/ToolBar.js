@@ -1,6 +1,8 @@
 // Copyright (c) Microsoft Corp.  All Rights Reserved. Licensed under the MIT License. See License.txt in the project root for license information.
 
 describe("ToolBar control directive tests", function () {
+    var testTimeout = 5000;
+
     var scope,
         compile;
 
@@ -35,14 +37,48 @@ describe("ToolBar control directive tests", function () {
         expect(compiledControl.querySelectorAll(".win-command").length).toEqual(2);
     });
 
-    it("should use the shownDisplayMode attribute", function () {
-        var compiledControl = initControl("<win-tool-bar shown-display-mode=\"'reduced'\"></win-tool-bar>");
-        expect(compiledControl.winControl.shownDisplayMode).toEqual("reduced");
+    it("should use the closedDisplayMode attribute", function () {
+        var compiledControl = initControl("<win-tool-bar closed-display-mode=\"'full'\"></win-tool-bar>");
+        expect(compiledControl.winControl.closedDisplayMode).toEqual("full");
     });
 
-    it("should use the extraClass attribute", function () {
-        var compiledControl = initControl("<win-tool-bar extra-class=\"'ExtraClass'\"></win-tool-bar>");
-        expect(compiledControl.className).toContain("ExtraClass");
+    it("should use the onopen and onclose event handlers and opened attribute", function () {
+        var gotBeforeOpenEvent = false,
+            gotAfterOpenEvent = false,
+            gotBeforeCloseEvent = false,
+            gotAfterCloseEvent = false;
+        scope.beforeOpenEventHandler = function (e) {
+            gotBeforeOpenEvent = true;
+        };
+        scope.afterOpenEventHandler = function (e) {
+            gotAfterOpenEvent = true;
+        };
+        scope.beforeCloseEventHandler = function (e) {
+            gotBeforeCloseEvent = true;
+        };
+        scope.afterCloseEventHandler = function (e) {
+            gotAfterCloseEvent = true;
+        };
+        scope.toolbarOpened = false;
+        var compiledControl = initControl("<win-tool-bar on-before-open='beforeOpenEventHandler($event)' on-after-open='afterOpenEventHandler($event)' " +
+                                           "on-before-close='beforeCloseEventHandler($event)' on-after-close='afterCloseEventHandler($event)' opened='toolbarOpened'></win-tool-bar>");
+        runs(function () {
+            compiledControl.winControl.open();
+        });
+
+        waitsFor(function () {
+            return (gotBeforeOpenEvent && gotAfterOpenEvent);
+        }, "the ToolBar's before+aftershow events", testTimeout);
+
+        runs(function () {
+            expect(scope.toolbarOpened).toBeTruthy();
+            scope.toolbarOpened = false;
+            scope.$digest();
+        });
+
+        waitsFor(function () {
+            return (gotBeforeCloseEvent && gotAfterCloseEvent);
+        }, "the ToolBar's before+afterhide events", testTimeout);
     });
 
     afterEach(function () {

@@ -87,15 +87,6 @@
         }
     }
 
-    function applyShown(control, shown) {
-        if (shown === true) {
-            control.show();
-        }
-        else if (shown === false) {
-            control.hide();
-        }
-    }
-
     function exists(control) {
         return !!Object.getOwnPropertyDescriptor(WinJS.UI, control);
     }
@@ -299,7 +290,7 @@
     function initializeControl($scope, element, controlConstructor, api, extraOptions, onDestroyed) {
         // WinJS has a couple naming collisions with actual DOM attributes. When the control we're constructing has
         // these attributes on its DOM element, we'll remove them so the WinJS control can function as appropriate.
-        var attributesToRemove = ["checked", "disabled", "id", "title", "type"];
+        var attributesToRemove = ["checked", "disabled", "hidden", "id", "title", "type"];
         for (var i = 0, len = attributesToRemove.length; i < len; i++) {
             if (api.hasOwnProperty(attributesToRemove[i])) {
                 element.removeAttribute(attributesToRemove[i]);
@@ -394,16 +385,14 @@
     exists("AppBar") && module.directive("winAppBar", ['$parse', function ($parse) {
         var api = {
             closedDisplayMode: BINDING_property,
-            commands: BINDING_property,
+            data: BINDING_property,
             disabled: BINDING_property,
-            hidden: BINDING_readonly_property,
-            layout: BINDING_property,
+            opened: BINDING_property,
             placement: BINDING_property,
-            sticky: BINDING_property,
-            onAfterHide: BINDING_event,
-            onAfterShow: BINDING_event,
-            onBeforeHide: BINDING_event,
-            onBeforeShow: BINDING_event
+            onAfterClose: BINDING_event,
+            onAfterOpen: BINDING_event,
+            onBeforeClose: BINDING_event,
+            onBeforeOpen: BINDING_event
         };
         return {
             restrict: "E",
@@ -414,20 +403,14 @@
             link: function ($scope, elements, attrs) {
                 var control = initializeControl($scope, elements[0], WinJS.UI.AppBar, api);
 
-                // Temporary workaround for hidden property (currently is read only in WinJS, to be resolved soon)
-                if (attrs.shown) {
-                    var shownProp = $parse(attrs.shown);
-                    applyShown(control, shownProp($scope));
-                    $scope.$watch(attrs.shown, function (newVal, oldVal, scope) {
-                        applyShown(control, shownProp(scope));
-                    });
-                    control.addEventListener("beforehide", function () {
-                        shownProp.assign($scope, false);
-                    });
-                    control.addEventListener("beforeshow", function () {
-                        shownProp.assign($scope, true);
+                function onVisibilityChanged() {
+                    apply($scope, function () {
+                        $scope["opened"] = control["opened"];
                     });
                 }
+
+                control.addEventListener("afteropen", onVisibilityChanged);
+                control.addEventListener("afterclose", onVisibilityChanged);
             }
         };
     }]);
@@ -443,6 +426,7 @@
             id: BINDING_property,
             label: BINDING_property,
             lastElementFocus: BINDING_property,
+            priority: BINDING_property,
             section: BINDING_property,
             selected: BINDING_property,
             tooltip: BINDING_property,
@@ -472,6 +456,7 @@
             id: BINDING_property,
             label: BINDING_property,
             lastElementFocus: BINDING_property,
+            priority: BINDING_property,
             section: BINDING_property,
             selected: BINDING_property,
             tooltip: BINDING_property,
@@ -501,6 +486,7 @@
             id: BINDING_property,
             label: BINDING_property,
             lastElementFocus: BINDING_property,
+            priority: BINDING_property,
             section: BINDING_property,
             selected: BINDING_property,
             tooltip: BINDING_property,
@@ -585,7 +571,7 @@
 
     exists("ContentDialog") && module.directive("winContentDialog", function () {
         var api = {
-            hidden: BINDING_readonly_property,
+            hidden: BINDING_property,
             primaryCommandText: BINDING_property,
             primaryCommandDisabled: BINDING_property,
             secondaryCommandText: BINDING_property,
@@ -603,7 +589,16 @@
             template: "<DIV ng-transclude='true'></DIV>",
             transclude: true,
             link: function ($scope, elements, attrs) {
-                initializeControl($scope, elements[0], WinJS.UI.ContentDialog, api);
+                var control = initializeControl($scope, elements[0], WinJS.UI.ContentDialog, api);
+
+                function onVisibilityChanged() {
+                    apply($scope, function () {
+                        $scope["hidden"] = control["hidden"];
+                    });
+                }
+
+                control.addEventListener("afterhide", onVisibilityChanged);
+                control.addEventListener("aftershow", onVisibilityChanged);
             }
         };
     });
@@ -684,6 +679,7 @@
         var api = {
             alignment: BINDING_property,
             anchor: BINDING_anchor,
+            hidden: BINDING_property,
             placement: BINDING_property,
             onAfterHide: BINDING_event,
             onAfterShow: BINDING_event,
@@ -699,20 +695,14 @@
             link: function ($scope, elements, attrs) {
                 var control = initializeControl($scope, elements[0], WinJS.UI.Flyout, api);
 
-                // Temporary workaround for hidden property (currently is read only in WinJS, to be resolved soon)
-                if (attrs.shown) {
-                    var shownProp = $parse(attrs.shown);
-                    applyShown(control, shownProp($scope));
-                    $scope.$watch(attrs.shown, function (newVal, oldVal, scope) {
-                        applyShown(control, shownProp(scope));
-                    });
-                    control.addEventListener("beforehide", function () {
-                        shownProp.assign($scope, false);
-                    });
-                    control.addEventListener("beforeshow", function () {
-                        shownProp.assign($scope, true);
+                function onVisibilityChanged() {
+                    apply($scope, function () {
+                        $scope["hidden"] = control["hidden"];
                     });
                 }
+
+                control.addEventListener("afterhide", onVisibilityChanged);
+                control.addEventListener("aftershow", onVisibilityChanged);
             }
         };
     }]);
@@ -907,9 +897,11 @@
     exists("ListView") && module.directive("winListView", function () {
         var api = {
             currentItem: BINDING_property,
+            footer: BINDING_property,
             groupDataSource: BINDING_dataSource,
             groupHeaderTemplate: BINDING_property,
             groupHeaderTapBehavior: BINDING_property,
+            header: BINDING_property,
             indexOfFirstVisible: BINDING_property,
             indexOfLastVisible: BINDING_property,
             itemDataSource: BINDING_dataSource,
@@ -989,20 +981,14 @@
             link: function ($scope, elements, attrs) {
                 var control = initializeControl($scope, elements[0], WinJS.UI.Menu, api);
 
-                // Temporary workaround for hidden property (currently is read only in WinJS, to be resolved soon)
-                if (attrs.shown) {
-                    var shownProp = $parse(attrs.shown);
-                    applyShown(control, shownProp($scope));
-                    $scope.$watch(attrs.shown, function (newVal, oldVal, scope) {
-                        applyShown(control, shownProp(scope));
-                    });
-                    control.addEventListener("beforehide", function () {
-                        shownProp.assign($scope, false);
-                    });
-                    control.addEventListener("beforeshow", function () {
-                        shownProp.assign($scope, true);
+                function onVisibilityChanged() {
+                    apply($scope, function () {
+                        $scope["hidden"] = control["hidden"];
                     });
                 }
+
+                control.addEventListener("afterhide", onVisibilityChanged);
+                control.addEventListener("aftershow", onVisibilityChanged);
             }
         };
     }]);
@@ -1035,13 +1021,12 @@
         var api = {
             closedDisplayMode: BINDING_property,
             disabled: BINDING_property,
-            hidden: BINDING_property,
+            opened: BINDING_property,
             placement: BINDING_property,
-            sticky: BINDING_property,
-            onAfterHide: BINDING_event,
-            onAfterShow: BINDING_event,
-            onBeforeHide: BINDING_event,
-            onBeforeShow: BINDING_event,
+            onAfterClose: BINDING_event,
+            onAfterOpen: BINDING_event,
+            onBeforeClose: BINDING_event,
+            onBeforeOpen: BINDING_event,
             onChildrenProcessed: BINDING_event
         };
 
@@ -1054,20 +1039,14 @@
             link: function ($scope, elements, attrs) {
                 var control = initializeControl($scope, elements[0], WinJS.UI.NavBar, api);
 
-                // Temporary workaround for hidden property (currently is read only in WinJS, to be resolved soon)
-                if (attrs.shown) {
-                    var shownProp = $parse(attrs.shown);
-                    applyShown(control, shownProp($scope));
-                    $scope.$watch(attrs.shown, function (newVal, oldVal, scope) {
-                        applyShown(control, shownProp(scope));
-                    });
-                    control.addEventListener("beforehide", function () {
-                        shownProp.assign($scope, false);
-                    });
-                    control.addEventListener("beforeshow", function () {
-                        shownProp.assign($scope, true);
+                function onVisibilityChanged() {
+                    apply($scope, function () {
+                        $scope["opened"] = control["opened"];
                     });
                 }
+
+                control.addEventListener("afteropen", onVisibilityChanged);
+                control.addEventListener("afterclose", onVisibilityChanged);
             }
         };
 
@@ -1097,7 +1076,8 @@
 
     exists("NavBarContainer") && module.directive("winNavBarContainer", function () {
         var api = {
-            data: BINDING_list,
+            currentIndex: BINDING_property,
+            data: BINDING_property,
             fixedSize: BINDING_property,
             layout: BINDING_property,
             template: BINDING_property,
@@ -1122,6 +1102,8 @@
 
     exists("Pivot") && module.directive("winPivot", function () {
         var api = {
+            customLeftHeader: BINDING_property,
+            customRightHeader: BINDING_property,
             items: BINDING_list,
             locked: BINDING_property,
             selectedIndex: BINDING_property,
@@ -1301,14 +1283,14 @@
 
     exists("SplitView") && module.directive("winSplitView", ['$parse', function ($parse) {
         var api = {
-            hiddenDisplayMode: BINDING_property,
-            shownDisplayMode: BINDING_property,
+            closedDisplayMode: BINDING_property,
+            openedDisplayMode: BINDING_property,
+            paneOpened: BINDING_property,
             panePlacement: BINDING_property,
-            paneHidden: BINDING_property,
-            onBeforeShow: BINDING_event,
-            onAfterShow: BINDING_event,
-            onBeforeHide: BINDING_event,
-            onAfterHide: BINDING_event
+            onBeforeOpen: BINDING_event,
+            onAfterOpen: BINDING_event,
+            onBeforeClose: BINDING_event,
+            onAfterClose: BINDING_event
         };
         return {
             restrict: "E",
@@ -1343,15 +1325,15 @@
                 for (var i = 0; i < contentElements.length; i++) {
                     control.contentElement.appendChild(contentElements[i]);
                 }
-                if (attrs.paneHidden) {
-                    var hiddenProp = $parse(attrs.paneHidden);
-                    control.addEventListener("beforehide", function () {
-                        hiddenProp.assign($scope, true);
-                    });
-                    control.addEventListener("beforeshow", function () {
-                        hiddenProp.assign($scope, false);
+
+                function onVisibilityChanged() {
+                    apply($scope, function () {
+                        $scope["paneOpened"] = control["paneOpened"];
                     });
                 }
+
+                control.addEventListener("afteropen", onVisibilityChanged);
+                control.addEventListener("afterclose", onVisibilityChanged);
             }
         };
     }]);
@@ -1363,6 +1345,23 @@
             replace: true,
             transclude: true,
             template: "<div ng-transclude='true' class='win-split-view-pane'></div>"
+        };
+    });
+
+    exists("SplitView") && module.directive("winSplitViewPaneToggle", function () {
+        var api = {
+            splitView: BINDING_property,
+            onInvoked: BINDING_event,
+        };
+        return {
+            restrict: "E",
+            replace: true,
+            scope: getScopeForAPI(api),
+            template: "<button ng-transclude='true'></button>",
+            transclude: true,
+            link: function ($scope, elements) {
+                initializeControl($scope, elements[0], WinJS.UI.SplitViewPaneToggle, api);
+            }
         };
     });
 
@@ -1432,9 +1431,13 @@
 
     exists("ToolBar") && module.directive("winToolBar", function () {
         var api = {
-            shownDisplayMode: BINDING_property,
-            extraClass: BINDING_property,
-            data: BINDING_list
+            closedDisplayMode: BINDING_property,
+            data: BINDING_property,
+            opened: BINDING_property,
+            onAfterClose: BINDING_event,
+            onAfterOpen: BINDING_event,
+            onBeforeClose: BINDING_event,
+            onBeforeOpen: BINDING_event
         };
         return {
             restrict: "E",
@@ -1443,7 +1446,16 @@
             template: "<DIV ng-transclude='true'></DIV>",
             transclude: true,
             link: function ($scope, elements, attrs) {
-                initializeControl($scope, elements[0], WinJS.UI.ToolBar, api);
+                var control = initializeControl($scope, elements[0], WinJS.UI.ToolBar, api);
+
+                function onVisibilityChanged() {
+                    apply($scope, function () {
+                        $scope["opened"] = control["opened"];
+                    });
+                }
+
+                control.addEventListener("afteropen", onVisibilityChanged);
+                control.addEventListener("afterclose", onVisibilityChanged);
             }
         };
     });
@@ -1459,6 +1471,7 @@
             id: BINDING_property,
             label: BINDING_property,
             lastElementFocus: BINDING_property,
+            priority: BINDING_property,
             section: BINDING_property,
             selected: BINDING_property,
             tooltip: BINDING_property,
@@ -1488,6 +1501,7 @@
             id: BINDING_property,
             label: BINDING_property,
             lastElementFocus: BINDING_property,
+            priority: BINDING_property,
             section: BINDING_property,
             selected: BINDING_property,
             tooltip: BINDING_property,
@@ -1517,6 +1531,7 @@
             id: BINDING_property,
             label: BINDING_property,
             lastElementFocus: BINDING_property,
+            priority: BINDING_property,
             section: BINDING_property,
             selected: BINDING_property,
             tooltip: BINDING_property,

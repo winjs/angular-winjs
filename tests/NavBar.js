@@ -57,11 +57,6 @@ describe("NavBar control directive tests", function () {
         expect(compiledControl.winControl.placement).toEqual("top");
     });
 
-    it("should use the sticky attribute", function () {
-        var compiledControl = initControl("<win-nav-bar sticky='true'></win-nav-bar>");
-        expect(compiledControl.winControl.sticky).toBeTruthy();
-    });
-
     it("should use the onChildrenProcessed event handler", function () {
         var gotProcessedEvent = false;
         scope.processedEventHandler = function (e) {
@@ -77,39 +72,42 @@ describe("NavBar control directive tests", function () {
         }, "the NavBar's onChildrenProcessed event", testTimeout);
     });
 
-    it("should use the onshow and onhide event handlers", function () {
-        var gotBeforeShowEvent = false,
-            gotAfterShowEvent = false,
-            gotBeforeHideEvent = false,
-            gotAfterHideEvent = false;
-        scope.beforeShowEventHandler = function (e) {
-            gotBeforeShowEvent = true;
+    it("should use the onopen and onclose event handlers and opened attribute", function () {
+        var gotBeforeOpenEvent = false,
+            gotAfterOpenEvent = false,
+            gotBeforeCloseEvent = false,
+            gotAfterCloseEvent = false;
+        scope.beforeOpenEventHandler = function (e) {
+            gotBeforeOpenEvent = true;
         };
-        scope.afterShowEventHandler = function (e) {
-            gotAfterShowEvent = true;
+        scope.afterOpenEventHandler = function (e) {
+            gotAfterOpenEvent = true;
         };
-        scope.beforeHideEventHandler = function (e) {
-            gotBeforeHideEvent = true;
+        scope.beforeCloseEventHandler = function (e) {
+            gotBeforeCloseEvent = true;
         };
-        scope.afterHideEventHandler = function (e) {
-            gotAfterHideEvent = true;
+        scope.afterCloseEventHandler = function (e) {
+            gotAfterCloseEvent = true;
         };
-        var compiledControl = initControl("<win-nav-bar on-before-show='beforeShowEventHandler($event)' on-after-show='afterShowEventHandler($event)' " +
-                                           "on-before-hide='beforeHideEventHandler($event)' on-after-hide='afterHideEventHandler($event)'></win-nav-bar>");
+        scope.navbarOpened = false;
+        var compiledControl = initControl("<win-nav-bar on-before-open='beforeOpenEventHandler($event)' on-after-open='afterOpenEventHandler($event)' " +
+                                           "on-before-close='beforeCloseEventHandler($event)' on-after-close='afterCloseEventHandler($event)' opened='navbarOpened'></win-nav-bar>");
         runs(function () {
-            compiledControl.winControl.show();
+            compiledControl.winControl.open();
         });
 
         waitsFor(function () {
-            return (gotBeforeShowEvent && gotAfterShowEvent);
+            return (gotBeforeOpenEvent && gotAfterOpenEvent);
         }, "the NavBar's before+aftershow events", testTimeout);
 
         runs(function () {
-            compiledControl.winControl.hide();
+            expect(scope.navbarOpened).toBeTruthy();
+            scope.navbarOpened = false;
+            scope.$digest();
         });
 
         waitsFor(function () {
-            return (gotBeforeHideEvent && gotAfterHideEvent);
+            return (gotBeforeCloseEvent && gotAfterCloseEvent);
         }, "the NavBar's before+afterhide events", testTimeout);
     });
     

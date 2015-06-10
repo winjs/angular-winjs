@@ -63,16 +63,6 @@ describe("HubSection control directive tests", function () {
         expect(headers[0].winControl.isHeaderStatic).toBeTruthy();
     });
 
-    /* TODO: Uncomment this test when bug is fixed
-    it("should use the existing CSS classes provided via markup", function () {
-        var compiledControl = initControl("<win-hub>" +
-                                              "<win-hub-section class='HubSectionClass'>Simple Section</win-hub-section>" +
-                                          "</win-hub>");
-        var headers = compiledControl.querySelectorAll(".win-hub-section");
-        expect(headers[0].className).toContain("HubSectionClass");
-    });
-    */
-
     it("should allow ng-repeat to be used in conjunction with the Hub to create HubSections", function () {
         var compiledControl = initControl("<win-hub>" +
                                               "<win-hub-section ng-repeat='item in testDataSource' header='item.title'></win-hub-section>" +

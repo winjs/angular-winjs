@@ -31,9 +31,14 @@ describe("SplitView control directive tests", function () {
         expect(compiledControl.className).toContain("win-splitview");
     });
 
-    it("should use the shownDisplayMode attribute", function () {
-        var compiledControl = initControl("<win-split-view shown-display-mode=\"'inline'\"></win-split-view>");
-        expect(compiledControl.winControl.shownDisplayMode).toEqual("inline");
+    it("should use the closedDisplayMode attribute", function () {
+        var compiledControl = initControl("<win-split-view closed-display-mode=\"'inline'\"></win-split-view>");
+        expect(compiledControl.winControl.closedDisplayMode).toEqual("inline");
+    });
+
+    it("should use the openedDisplayMode attribute", function () {
+        var compiledControl = initControl("<win-split-view opened-display-mode=\"'inline'\"></win-split-view>");
+        expect(compiledControl.winControl.openedDisplayMode).toEqual("inline");
     });
 
     it("should use the panePlacement attribute", function () {
@@ -84,41 +89,43 @@ describe("SplitView control directive tests", function () {
         expect(compiledControl.querySelectorAll(".shouldNotBeInDom").length).toEqual(0);
     });
 
-    it("should use the show and hide event handlers attribute", function () {
-        var gotBeforeShowEvent = false,
-            gotAfterShowEvent = false,
-            gotBeforeHideEvent = false,
-            gotAfterHideEvent = false;
-        scope.beforeShowEventHandler = function (e) {
-            gotBeforeShowEvent = true;
+    it("should use the open and close event handlers and paneOpened attribute", function () {
+        var gotBeforeOpenEvent = false,
+            gotAfterOpenEvent = false,
+            gotBeforeCloseEvent = false,
+            gotAfterCloseEvent = false;
+        scope.beforeOpenEventHandler = function (e) {
+            gotBeforeOpenEvent = true;
         };
-        scope.afterShowEventHandler = function (e) {
-            gotAfterShowEvent = true;
+        scope.afterOpenEventHandler = function (e) {
+            gotAfterOpenEvent = true;
         };
-        scope.beforeHideEventHandler = function (e) {
-            gotBeforeHideEvent = true;
+        scope.beforeCloseEventHandler = function (e) {
+            gotBeforeCloseEvent = true;
         };
-        scope.afterHideEventHandler = function (e) {
-            gotAfterHideEvent = true;
+        scope.afterCloseEventHandler = function (e) {
+            gotAfterCloseEvent = true;
         };
-
-        var compiledControl = initControl("<win-split-view on-before-show='beforeShowEventHandler($event)' on-after-show='afterShowEventHandler($event)' " +
-                                           "on-before-hide='beforeHideEventHandler($event)' on-after-hide='afterHideEventHandler($event)'></win-split-view>");
+        scope.paneOpened = false;
+        var compiledControl = initControl("<win-split-view on-before-open='beforeOpenEventHandler($event)' on-after-open='afterOpenEventHandler($event)' " +
+                                           "on-before-close='beforeCloseEventHandler($event)' on-after-close='afterCloseEventHandler($event)' pane-opened='paneOpened'></win-split-view>");
 
         runs(function () {
-            compiledControl.winControl.showPane();
+            compiledControl.winControl.openPane();
         });
 
         waitsFor(function () {
-            return (gotBeforeShowEvent && gotAfterShowEvent);
+            return (gotBeforeOpenEvent && gotAfterOpenEvent);
         }, "the SplitView's before+aftershow events", testTimeout);
 
         runs(function () {
-            compiledControl.winControl.hidePane();
+            expect(scope.paneOpened).toBeTruthy();
+            scope.paneOpened = false;
+            scope.$digest();
         });
 
         waitsFor(function () {
-            return (gotBeforeHideEvent && gotAfterHideEvent);
+            return (gotBeforeCloseEvent && gotAfterCloseEvent);
         }, "the SplitView's before+afterhide events", testTimeout);
     });
 

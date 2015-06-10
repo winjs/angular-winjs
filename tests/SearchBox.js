@@ -31,12 +31,10 @@ describe("SearchBox control directive tests", function () {
         expect(compiledControl.winControl.chooseSuggestionOnEnter).toBeTruthy();
     });
 
-    /* TODO: Uncomment this test when WinJS issue #900 is fixed 
     it("should use the disabled attribute", function () {
         var compiledControl = initControl("<win-search-box disabled='true'></win-search-box>");
         expect(compiledControl.winControl.disabled).toBeTruthy();
     });
-    */
 
     it("should use the focusOnKeyboardInput attribute", function () {
         var compiledControl = initControl("<win-search-box focus-on-keyboard-input='true'></win-search-box>");

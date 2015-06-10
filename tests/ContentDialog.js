@@ -87,9 +87,9 @@ describe("ContentDialog control directive tests", function () {
 
         runs(function () {
             expect(compiledControl.winControl.hidden).toBeFalsy();
-            // TODO: Uncomment this assertion when wrapper issue is fixed (right now wrapper doesn't propogate change in visibility back up to scope)
-            // expect(scope.dialogHidden).toBeFalsy();
-            compiledControl.winControl.hide();
+            expect(scope.dialogHidden).toBeFalsy();
+            scope.dialogHidden = true;
+            scope.$digest();
         });
 
         waitsFor(function () {
@@ -98,8 +98,7 @@ describe("ContentDialog control directive tests", function () {
 
         runs(function () {
             expect(compiledControl.winControl.hidden).toBeTruthy();
-            // TODO: Uncomment this assertion when wrapper issue is fixed (right now wrapper doesn't propogate change in visibility back up to scope)
-            // expect(scope.dialogHidden).toBeTruthy();
+             expect(scope.dialogHidden).toBeTruthy();
         });
     });
 

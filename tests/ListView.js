@@ -238,6 +238,26 @@ describe("ListView control directive tests", function () {
         });
     });
 
+    it("should use the header and footer attributes", function () {
+        scope.headerElement = document.createElement("div");
+        scope.footerElement = document.createElement("div");
+        var gotAnimatingEvent = false;
+        var compiledControl = initControl("<win-list-view item-data-source='testDataSource' header='headerElement' footer='footerElement'>" +
+                                              "<win-item-template>{{item.data.title}}</win-item-template>" +
+                                          "</win-list-view>");
+        var loadingComplete = waitForLoadingComplete(compiledControl.winControl);
+
+        waitsFor(function () {
+            return loadingComplete();
+        }, "the ListView's loadingStateChanged=complete event", testTimeout);
+
+        runs(function () {
+            var control = compiledControl.winControl;
+            expect(control.header).toEqual(scope.headerElement);
+            expect(control.footer).toEqual(scope.footerElement);
+        });
+    });
+
     afterEach(function () {
         var controls = document.querySelectorAll(".win-listview");
         for (var i = 0; i < controls.length; i++) {

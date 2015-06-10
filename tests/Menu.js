@@ -55,7 +55,7 @@ describe("Menu control directive tests", function () {
         expect(compiledControl.winControl.placement).toEqual("top");
     });
 
-    it("should use the onshow and onhide event handlers", function () {
+    it("should use the onshow and onhide event handlers and hidden attribute", function () {
         var gotBeforeShowEvent = false,
             gotAfterShowEvent = false,
             gotBeforeHideEvent = false,
@@ -72,8 +72,9 @@ describe("Menu control directive tests", function () {
         scope.afterHideEventHandler = function (e) {
             gotAfterHideEvent = true;
         };
+        scope.menuHidden = true;
         var compiledControl = initControl("<win-menu on-before-show='beforeShowEventHandler($event)' on-after-show='afterShowEventHandler($event)' " +
-                                           "on-before-hide='beforeHideEventHandler($event)' on-after-hide='afterHideEventHandler($event)'></win-menu>");
+                                           "on-before-hide='beforeHideEventHandler($event)' on-after-hide='afterHideEventHandler($event)' hidden='menuHidden'></win-menu>");
         runs(function () {
             compiledControl.winControl.show(document.body);
         });
@@ -83,7 +84,9 @@ describe("Menu control directive tests", function () {
         }, "the Menu's before+aftershow events", testTimeout);
 
         runs(function () {
-            compiledControl.winControl.hide();
+            expect(scope.menuHidden).toBeFalsy();
+            scope.menuHidden = true;
+            scope.$digest();
         });
 
         waitsFor(function () {

@@ -38,7 +38,15 @@ describe("NavBarContainer control directive tests", function () {
         expect(compiledControl.winControl.layout).toEqual("vertical");
     });
 
-    // TODO: Tests for data and template once bug in data property is fixed
+    it("should use the data and template attributes", function () {
+        scope.data = new WinJS.Binding.List([1, 2, 3]);
+        scope.template = new WinJS.Binding.Template();
+        var control = initControl("<win-nav-bar-container data='data' template='template'></win-nav-bar-container>").winControl;
+
+        expect(control.data).toEqual(scope.data);
+        expect(control.template).toEqual(scope.template);
+    });
+
     afterEach(function () {
         var controls = document.querySelectorAll(".win-navbarcontainer");
         for (var i = 0; i < controls.length; i++) {

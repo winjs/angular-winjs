@@ -47,7 +47,7 @@ describe("Flyout control directive tests", function () {
         expect(compiledControl.winControl.anchor).toBe(anchorEl);
     });
 
-    it("should use the onshow and onhide event handlers", function () {
+    it("should use the onshow and onhide event handlers and hidden attribute", function () {
         var gotBeforeShowEvent = false,
             gotAfterShowEvent = false,
             gotBeforeHideEvent = false,
@@ -64,8 +64,9 @@ describe("Flyout control directive tests", function () {
         scope.afterHideEventHandler = function (e) {
             gotAfterHideEvent = true;
         };
+        scope.flyoutHidden = true;
         var compiledControl = initControl("<win-flyout on-before-show='beforeShowEventHandler($event)' on-after-show='afterShowEventHandler($event)' " +
-                                           "on-before-hide='beforeHideEventHandler($event)' on-after-hide='afterHideEventHandler($event)'></win-flyout>");
+                                           "on-before-hide='beforeHideEventHandler($event)' on-after-hide='afterHideEventHandler($event)' hidden='flyoutHidden'></win-flyout>");
         runs(function () {
             compiledControl.winControl.show(document.body);
         });
@@ -75,7 +76,9 @@ describe("Flyout control directive tests", function () {
         }, "the Flyout's before+aftershow events", testTimeout);
 
         runs(function () {
-            compiledControl.winControl.hide();
+            expect(scope.flyoutHidden).toBeFalsy();
+            scope.flyoutHidden = true;
+            scope.$digest();
         });
 
         waitsFor(function () {

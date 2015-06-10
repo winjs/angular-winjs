@@ -40,13 +40,13 @@ describe("AppBar control directive tests", function () {
         expect(compiledControl.querySelectorAll(".win-command").length).toEqual(2);
     });
 
-    it("should use the commands attribute", function () {
-        scope.testCommands = [
+    it("should use the data attribute", function () {
+        scope.testCommands = new WinJS.Binding.List([
             new WinJS.UI.AppBarCommand(null, { label: "TestCommand0" }),
             new WinJS.UI.AppBarCommand(null, { label: "TestCommand1" })
-        ];
-        var compiledControl = initControl("<win-app-bar commands='testCommands'></win-app-bar>");
-        
+        ]);
+        var compiledControl = initControl("<win-app-bar data='testCommands'></win-app-bar>");
+
         var commands = compiledControl.querySelectorAll(".win-command");
         expect(commands.length).toEqual(2);
         expect(commands[0].querySelector(".win-label").innerHTML).toEqual("TestCommand0");
@@ -68,49 +68,47 @@ describe("AppBar control directive tests", function () {
         expect(compiledControl.winControl.placement).toEqual("top");
     });
 
-    it("should use the layout attribute", function () {
-        var compiledControl = initControl("<win-app-bar layout=\"'menu'\"></win-app-bar>");
-        expect(compiledControl.winControl.layout).toEqual("menu");
+    it("should use the opened attribute", function () {
+        var compiledControl = initControl("<win-app-bar opened='true'></win-app-bar>");
+        expect(compiledControl.winControl.opened).toBeTruthy();
     });
 
-    it("should use the sticky attribute", function () {
-        var compiledControl = initControl("<win-app-bar sticky='true'></win-app-bar>");
-        expect(compiledControl.winControl.sticky).toBeTruthy();
-    });
-
-    it("should use the onshow and onhide event handlers", function () {
-        var gotBeforeShowEvent = false,
-            gotAfterShowEvent = false,
-            gotBeforeHideEvent = false,
-            gotAfterHideEvent = false;
-        scope.beforeShowEventHandler = function (e) {
-            gotBeforeShowEvent = true;
+    it("should use the onopen and onclose event handlers and opened attribute", function () {
+        var gotBeforeOpenEvent = false,
+            gotAfterOpenEvent = false,
+            gotBeforeCloseEvent = false,
+            gotAfterCloseEvent = false;
+        scope.beforeOpenEventHandler = function (e) {
+            gotBeforeOpenEvent = true;
         };
-        scope.afterShowEventHandler = function (e) {
-            gotAfterShowEvent = true;
+        scope.afterOpenEventHandler = function (e) {
+            gotAfterOpenEvent = true;
         };
-        scope.beforeHideEventHandler = function (e) {
-            gotBeforeHideEvent = true;
+        scope.beforeCloseEventHandler = function (e) {
+            gotBeforeCloseEvent = true;
         };
-        scope.afterHideEventHandler = function (e) {
-            gotAfterHideEvent = true;
+        scope.afterCloseEventHandler = function (e) {
+            gotAfterCloseEvent = true;
         };
-        var compiledControl = initControl("<win-app-bar on-before-show='beforeShowEventHandler($event)' on-after-show='afterShowEventHandler($event)' " +
-                                           "on-before-hide='beforeHideEventHandler($event)' on-after-hide='afterHideEventHandler($event)'></win-app-bar>");
+        scope.appbarOpened = false;
+        var compiledControl = initControl("<win-app-bar on-before-open='beforeOpenEventHandler($event)' on-after-open='afterOpenEventHandler($event)' " +
+                                           "on-before-close='beforeCloseEventHandler($event)' on-after-close='afterCloseEventHandler($event)' opened='appbarOpened'></win-app-bar>");
         runs(function () {
-            compiledControl.winControl.show();
+            compiledControl.winControl.open();
         });
 
         waitsFor(function () {
-            return (gotBeforeShowEvent && gotAfterShowEvent);
+            return (gotBeforeOpenEvent && gotAfterOpenEvent);
         }, "the AppBar's before+aftershow events", testTimeout);
 
         runs(function () {
-            compiledControl.winControl.hide();
+            expect(scope.appbarOpened).toBeTruthy();
+            scope.appbarOpened = false;
+            scope.$digest();
         });
 
         waitsFor(function () {
-            return (gotBeforeHideEvent && gotAfterHideEvent);
+            return (gotBeforeCloseEvent && gotAfterCloseEvent);
         }, "the AppBar's before+afterhide events", testTimeout);
     });
 
