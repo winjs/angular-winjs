@@ -103,7 +103,10 @@
     function list($scope, key, getControl, getList, bindings) {
         var value = $scope[key];
         if (value && Array.isArray(value)) {
-            value = new WinJS.Binding.List(value);
+            var originalArray = value;
+            var bindingList = new WinJS.Binding.List(originalArray);
+            value = bindingList;
+
             bindings.push($scope.$watchCollection(key, function (array) {
                 var list = getList();
                 if (!list) {
@@ -152,6 +155,33 @@
                 // Clip any items which are left over in the tail.
                 list.length = array.length;
             }));
+
+            var deferUpdate = false;
+            function updateOriginalArray() {
+                if (deferUpdate) {
+                    return;
+                }
+
+                // Defer here so that we can process all changes to the list in one go.
+                deferUpdate = true;
+                WinJS.Utilities._setImmediate(function () {
+                    apply($scope, function () {
+                        originalArray.length = 0;
+                        for (var i = 0, len = bindingList.length; i < len; i++) {
+                            originalArray.push(bindingList.getAt(i));
+                        }
+                        deferUpdate = false;
+                    });
+                });
+            }
+
+            // The Binding.List we're creating for the WinJS control can be altered by the control (eg, ListView will reorder the content of its Binding.List in drag and drop scenarios).
+            // We need to make sure changes to this list propagate back to the original array on the Angular scope. We'll listen to all data changes in the Binding.List
+            // and change the original array when something changes.
+            var bindingListMutationEvents = ["itemchanged", "itemmoved", "itemmutated", "itemremoved", "reload"];
+            bindingListMutationEvents.forEach(function (event) {
+                bindingList.addEventListener(event, updateOriginalArray);
+            });
         } else {
             // The value from $scope[key] can be undefined when this list function first runs.
             // If the binding behind that value has already been processed by angular but hasn't been applied to the scope yet, $scope[key] will be undefined,
@@ -525,7 +555,7 @@
             }
         };
     });
-    
+
     exists("AutoSuggestBox") && module.directive("winAutoSuggestBox", function () {
         var api = {
             chooseSuggestionOnEnter: BINDING_property,

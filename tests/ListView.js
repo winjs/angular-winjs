@@ -218,7 +218,6 @@ describe("ListView control directive tests", function () {
 
     it("should use the selection attribute", function () {
         scope.selection = [];
-        var gotAnimatingEvent = false;
         var compiledControl = initControl("<win-list-view item-data-source='testDataSource' selection='selection'>" +
                                               "<win-item-template>{{item.data.title}}</win-item-template>" +
                                           "</win-list-view>");
@@ -235,6 +234,37 @@ describe("ListView control directive tests", function () {
             scope.$digest();
             expect(control.selection.count()).toEqual(1);
             expect(control.selection.getIndices()[0]).toEqual(2);
+        });
+    });
+
+    it("should apply reorders back to the scope", function () {
+        var compiledControl = initControl("<win-list-view item-data-source='testDataSource' selection='selection'>" +
+                                              "<win-item-template>{{item.data.title}}</win-item-template>" +
+                                          "</win-list-view>");
+        var originalDataSource = [];
+        for (var i = 0; i < testDataSourceLength; i++) {
+            originalDataSource[i] = scope.testDataSource[i];
+        }
+        var loadingComplete = waitForLoadingComplete(compiledControl.winControl);
+
+        waitsFor(function () {
+            return loadingComplete();
+        }, "the ListView's loadingStateChanged=complete event", testTimeout);
+
+        runs(function () {
+            var control = compiledControl.winControl;
+            control.selection.set([testDataSourceLength - 1]);
+            control._currentMode()._reorderItems(0, control.selection, false, true, false);
+            loadingComplete = waitForLoadingComplete(compiledControl.winControl);
+        });
+
+        waitsFor(function () {
+            return loadingComplete();
+        }, "the ListView's loadingStateChanged=complete event after reorder", testTimeout);
+
+        runs(function () {
+            expect(originalDataSource[testDataSourceLength - 1]).toEqual(scope.testDataSource[0]);
+            expect(originalDataSource[0]).toEqual(scope.testDataSource[1]);
         });
     });
 
