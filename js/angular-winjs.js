@@ -821,7 +821,7 @@
             restrict: "E",
             replace: true,
             scope: getScopeForAPI(api),
-            template: "<DIV><DIV class='placeholder-holder' style='display:none;' ng-transclude='true'></DIV></DIV>",
+            template: "<DIV><DIV class='placeholder-holder' style='visibility:hidden' ng-transclude='true'></DIV></DIV>",
             transclude: true,
             controller: ['$scope', function ($scope) {
                 // The children will (may) call back before the Hub is constructed so we queue up the calls to
@@ -1206,7 +1206,7 @@
             restrict: "E",
             replace: true,
             scope: getScopeForAPI(api),
-            template: "<DIV><DIV class='placeholder-holder' style='display:none;' ng-transclude='true'></DIV></DIV>",
+            template: "<DIV><DIV class='placeholder-holder' style='visibility:hidden' ng-transclude='true'></DIV></DIV>",
             transclude: true,
             controller: ['$scope', function ($scope) {
                 // The children will (may) call back before the Pivot is constructed so we queue up the calls to
@@ -1648,7 +1648,7 @@
             replace: true,
             transclude: true,
             template: "\
-<div style='display:none'>\
+<div style='visibility:hidden'>\
   <div ng-transclude='true'></div>\
 </div>",
             link: function ($scope, elements, attrs, tooltip) {
