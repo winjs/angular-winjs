@@ -108,11 +108,13 @@ describe("AppBarCommand control directive tests", function () {
         var compiledControl = initControl("<win-app-bar>" +
                                               "<win-app-bar-separator></win-app-bar-separator>" +
                                               "<win-app-bar-content></win-app-bar-content>" +
+                                              "<win-app-bar-command type='\"toggle\"'></win-app-bar-command>" +
                                           "</win-app-bar>");
 
         var commands = compiledControl.querySelectorAll(".win-command");
         expect(commands[0].winControl.type).toEqual("separator");
         expect(commands[1].winControl.type).toEqual("content");
+        expect(commands[2].winControl.type).toEqual("toggle");
     });
 
     it("should use the priority attribute", function () {

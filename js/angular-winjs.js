@@ -386,7 +386,6 @@
         var api = {
             closedDisplayMode: BINDING_property,
             data: BINDING_property,
-            disabled: BINDING_property,
             opened: BINDING_property,
             placement: BINDING_property,
             onAfterClose: BINDING_event,

@@ -29,6 +29,7 @@ Examples of control usage
         <win-app-bar-content>
             <win-search-box placeholder-text="'Search'"></win-search-box>
         </win-app-bar-content>
+        <win-app-bar-command type="'toggle'" icon="'world'" label="'Planet'"></win-app-bar-command>
     </win-app-bar>
 
 ### AutoSuggestionBox

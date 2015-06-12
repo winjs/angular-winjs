@@ -58,11 +58,6 @@ describe("AppBar control directive tests", function () {
         expect(compiledControl.winControl.closedDisplayMode).toEqual("minimal");
     });
 
-    it("should use the disabled attribute", function () {
-        var compiledControl = initControl("<win-app-bar disabled='true'></win-app-bar>");
-        expect(compiledControl.winControl.disabled).toBeTruthy();
-    });
-
     it("should use the placement attribute", function () {
         var compiledControl = initControl("<win-app-bar placement=\"'top'\"></win-app-bar>");
         expect(compiledControl.winControl.placement).toEqual("top");
