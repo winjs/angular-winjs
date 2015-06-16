@@ -129,11 +129,6 @@ Examples of control usage
     The current rating is: {{ratings[0].rating}}.<br/>
     <win-rating max-rating="5" user-rating="ratings[0].rating"></win-rating>
 
-### SearchBox
-
-    The current search text is: {{searchText}}.<br/>
-    <win-search-box query-text="searchText"></win-search-box>
-
 ### SemanticZoom
 
     <win-semantic-zoom>
