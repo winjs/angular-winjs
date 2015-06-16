@@ -8,7 +8,8 @@ How to use this in your Angular project?
 
 Just make sure to include WinJS 4.0, and then include the shim.
 
-    <script src="WinJS.js"></script>
+    <script src="base.js"></script>
+    <script src="ui.js"></script>
     <script src="angular-winjs.js"></script>
     
 You must also add this module to your list of angular module dependencies:
@@ -84,8 +85,10 @@ Examples of control usage
 
     <div>Selected count: {{selection.length}}, indexes: {{selection.toString()}}</div>
     <win-list-view item-data-source="ratings" selection="selection">
+        <win-list-view-header>This is a ListView header</win-list-view-header>
         <win-item-template>This list view item's rating is: {{item.data.rating}}</win-item-template>
         <win-list-layout></win-list-layout>
+        <win-list-view-footer>This is a ListView footer</win-list-view-footer>
     </win-list-view>
 
 ### Menu and MenuCommand
@@ -155,6 +158,20 @@ Examples of control usage
         <win-split-view-pane>SplitView Navigation Pane</win-split-view-pane>
         <win-split-view-content>SplitView Content Area</win-split-view-content>
     </win-split-view>
+
+### SplitView
+```js
+        angular.module("yourAngularApp", ["winjs"]).controller("yourController", function ($scope) {
+            $scope.splitViewElement = document.getElementById("splitView");
+        });
+```
+```html
+    <win-split-view-pane-toggle split-view="splitViewElement"></win-split-view-pane-toggle>
+    <win-split-view id="splitView">
+        <win-split-view-pane>SplitView Navigation Pane</win-split-view-pane>
+        <win-split-view-content>SplitView Content Area</win-split-view-content>
+    </win-split-view>
+```
 
 ### ToolBar
 

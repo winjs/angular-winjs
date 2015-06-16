@@ -45,11 +45,6 @@ describe("Menu control directive tests", function () {
         expect(compiledControl.winControl.alignment).toEqual("right");
     });
 
-    it("should use the disabled attribute", function () {
-        var compiledControl = initControl("<win-menu disabled='true'></win-menu>");
-        expect(compiledControl.winControl.disabled).toBeTruthy();
-    });
-
     it("should use the placement attribute", function () {
         var compiledControl = initControl("<win-menu placement=\"'top'\"></win-menu>");
         expect(compiledControl.winControl.placement).toEqual("top");
@@ -92,6 +87,11 @@ describe("Menu control directive tests", function () {
         waitsFor(function () {
             return (gotBeforeHideEvent && gotAfterHideEvent);
         }, "the Menu's before+afterhide events", testTimeout);
+
+        runs(function () {
+            expect(scope.menuHidden).toBeTruthy();
+            expect(compiledControl.winControl.hidden).toBeTruthy();
+        });
     });
 
     afterEach(function () {

@@ -84,6 +84,11 @@ describe("Flyout control directive tests", function () {
         waitsFor(function () {
             return (gotBeforeHideEvent && gotAfterHideEvent);
         }, "the Flyout's before+afterhide events", testTimeout);
+
+        runs(function () {
+            expect(scope.flyoutHidden).toBeTruthy();
+            expect(compiledControl.winControl.hidden).toBeTruthy();
+        });
     });
 
     afterEach(function () {

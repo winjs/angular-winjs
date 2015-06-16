@@ -46,11 +46,6 @@ describe("NavBar control directive tests", function () {
         var compiledControl = initControl("<win-nav-bar closed-display-mode=\"'minimal'\"></win-nav-bar>");
         expect(compiledControl.winControl.closedDisplayMode).toEqual("minimal");
     });
-    
-    it("should use the disabled attribute", function () {
-        var compiledControl = initControl("<win-nav-bar disabled='true'></win-nav-bar>");
-        expect(compiledControl.winControl.disabled).toBeTruthy();
-    });
 
     it("should use the placement attribute", function () {
         var compiledControl = initControl("<win-nav-bar placement=\"'top'\"></win-nav-bar>");
@@ -109,6 +104,11 @@ describe("NavBar control directive tests", function () {
         waitsFor(function () {
             return (gotBeforeCloseEvent && gotAfterCloseEvent);
         }, "the NavBar's before+afterhide events", testTimeout);
+
+        runs(function () {
+            expect(scope.navbarOpened).toBeFalsy();
+            expect(compiledControl.winControl.opened).toBeFalsy();
+        });
     });
     
     afterEach(function () {

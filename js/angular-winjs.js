@@ -238,17 +238,6 @@
     }
     BINDING_selection.binding = "=?";
 
-    function BINDING_list($scope, key, element, getControl, bindings) {
-        function getList() {
-            var control = getControl();
-            if (control) {
-                return control[key];
-            }
-        }
-        return list($scope, key, getControl, getList, bindings);
-    }
-    BINDING_list.binding = "=?";
-
     function getScopeForAPI(api) {
         var scopeDefinition = {};
         for (var property in api) {
@@ -380,6 +369,44 @@
             }
         };
     }]);
+
+    function camelToDash(string) {
+        return string.replace(/[A-Z]/g, function (letter) {
+            return "-" + letter.toLowerCase();
+        });
+    }
+
+    function createHelperDirective(requires, directiveName) {
+        var helperClassName = camelToDash(directiveName);
+        module.directive(directiveName, function () {
+            return {
+                require: "^" + requires,
+                restrict: "E",
+                replace: true,
+                transclude: true,
+                template: "<div ng-transclude='true' class='" + helperClassName + "'></div>"
+            };
+        });
+    }
+
+    function extractHelperDirectiveElements(parentNode, directiveName) {
+        var elements = parentNode.querySelectorAll("." + camelToDash(directiveName));
+        for (var i = 0, len = elements.length; i < len; i++) {
+            elements[i].parentNode.removeChild(elements[i]);
+        }
+        return elements;
+    }
+
+    function getHelperDirectives(parentNode, directives) {
+        var directivesFound = {};
+        directives.forEach(function (directive) {
+            var matchingElements = extractHelperDirectiveElements(parentNode, directive.directiveName);
+            if (matchingElements.length > 0) {
+                directivesFound[directive.controlOptionName] = matchingElements[0];
+            }
+        });
+        return directivesFound;
+    }
 
     // Directives
     exists("AppBar") && module.directive("winAppBar", ['$parse', function ($parse) {
@@ -747,7 +774,7 @@
             orientation: BINDING_property,
             scrollPosition: BINDING_property,
             sectionOnScreen: BINDING_property,
-            sections: BINDING_list,
+            sections: BINDING_property,
             onContentAnimating: BINDING_event,
             onHeaderInvoked: BINDING_event,
             onLoadingStateChanged: BINDING_event
@@ -893,6 +920,16 @@
         };
     });
 
+    var listviewHelperDirectives = [
+        {
+            controlOptionName: "header",
+            directiveName: "winListViewHeader"
+        },
+        {
+            controlOptionName: "footer",
+            directiveName: "winListViewFooter"
+        }
+    ];
     exists("ListView") && module.directive("winListView", function () {
         var api = {
             currentItem: BINDING_property,
@@ -914,7 +951,9 @@
             selectionMode: BINDING_property,
             tapBehavior: BINDING_property,
             onContentAnimating: BINDING_event,
+            onFooterVisibilityChanged: BINDING_event,
             onGroupHeaderInvoked: BINDING_event,
+            onHeaderVisibilityChanged: BINDING_event,
             onItemDragStart: BINDING_event,
             onItemDragEnter: BINDING_event,
             onItemDragBetween: BINDING_event,
@@ -940,7 +979,8 @@
                 proxy($scope, this, "selection");
             }],
             link: function ($scope, elements, attrs) {
-                var control = initializeControl($scope, elements[0], WinJS.UI.ListView, api);
+                var element = elements[0];
+                var control = initializeControl($scope, element, WinJS.UI.ListView, api, getHelperDirectives(element, listviewHelperDirectives));
 
                 control.addEventListener("selectionchanged", function () {
                     var value = $scope["selection"];
@@ -957,13 +997,15 @@
             }
         };
     });
+    exists("ListView") && listviewHelperDirectives.forEach(function (directive) {
+        createHelperDirective("winListView", directive.directiveName);
+    });
 
     exists("Menu") && module.directive("winMenu", ['$parse', function ($parse) {
         var api = {
             alignment: BINDING_property,
             anchor: BINDING_anchor,
             commands: BINDING_property,
-            disabled: BINDING_property,
             hidden: BINDING_property,
             placement: BINDING_property,
             onAfterHide: BINDING_event,
@@ -1019,7 +1061,6 @@
     exists("NavBar") && module.directive("winNavBar", ['$parse', function ($parse) {
         var api = {
             closedDisplayMode: BINDING_property,
-            disabled: BINDING_property,
             opened: BINDING_property,
             placement: BINDING_property,
             onAfterClose: BINDING_event,
@@ -1099,11 +1140,21 @@
         };
     });
 
+    var pivotHelperDirectives = [
+        {
+            controlOptionName: "customLeftHeader",
+            directiveName: "winPivotLeftHeader"
+        },
+        {
+            controlOptionName: "customRightHeader",
+            directiveName: "winPivotRightHeader"
+        }
+    ];
     exists("Pivot") && module.directive("winPivot", function () {
         var api = {
             customLeftHeader: BINDING_property,
             customRightHeader: BINDING_property,
-            items: BINDING_list,
+            items: BINDING_property,
             locked: BINDING_property,
             selectedIndex: BINDING_property,
             selectedItem: BINDING_property,
@@ -1141,11 +1192,12 @@
             }],
             link: function ($scope, elements) {
                 var element = elements[0];
+                var helperDirectives = getHelperDirectives(element, pivotHelperDirectives);
                 // NOTE: the Pivot will complain if this is in the DOM when it is constructed so we temporarially remove it.
                 //       It must be in the DOM when repeaters run and hosted under the pivot.
                 var itemsHost = element.firstElementChild;
                 itemsHost.parentNode.removeChild(itemsHost);
-                var control = initializeControl($scope, element, WinJS.UI.Pivot, api);
+                var control = initializeControl($scope, element, WinJS.UI.Pivot, api, helperDirectives);
 
                 element.appendChild(itemsHost);
                 $scope.addItem = function (item, index) {
@@ -1158,6 +1210,9 @@
                 $scope.deferredCalls = null;
             }
         };
+    });
+    exists("Pivot") && pivotHelperDirectives.forEach(function (directive) {
+        createHelperDirective("winPivot", directive.directiveName);
     });
 
     exists("PivotItem") && module.directive("winPivotItem", function () {
@@ -1211,38 +1266,6 @@
                 control.addEventListener("change", function () {
                     apply($scope, function () {
                         $scope["userRating"] = control["userRating"];
-                    });
-                });
-            }
-        };
-    });
-
-    exists("SearchBox") && module.directive("winSearchBox", function () {
-        var api = {
-            chooseSuggestionOnEnter: BINDING_property,
-            disabled: BINDING_property,
-            focusOnKeyboardInput: BINDING_property,
-            placeholderText: BINDING_property,
-            queryText: BINDING_property,
-            searchHistoryContext: BINDING_property,
-            searchHistoryDisabled: BINDING_property,
-            onQueryChanged: BINDING_event,
-            onQuerySubmitted: BINDING_event,
-            onReceivingFocusOnKeyboardInput: BINDING_event,
-            onResultSuggestionChosen: BINDING_event,
-            onSuggestionsRequested: BINDING_event
-        };
-        return {
-            restrict: "E",
-            replace: true,
-            scope: getScopeForAPI(api),
-            template: "<DIV></DIV>",
-            link: function ($scope, elements, attrs) {
-                var control = initializeControl($scope, elements[0], WinJS.UI.SearchBox, api);
-
-                control.addEventListener("querychanged", function () {
-                    apply($scope, function () {
-                        $scope["queryText"] = control["queryText"];
                     });
                 });
             }
@@ -1347,7 +1370,7 @@
         };
     });
 
-    exists("SplitView") && module.directive("winSplitViewPaneToggle", function () {
+    exists("SplitViewPaneToggle") && module.directive("winSplitViewPaneToggle", function () {
         var api = {
             splitView: BINDING_property,
             onInvoked: BINDING_event,

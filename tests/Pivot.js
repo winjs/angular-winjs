@@ -152,11 +152,22 @@ describe("Pivot control directive tests", function () {
         scope.customLeftHeader = document.createElement("div");
         scope.customRightHeader = document.createElement("div");
         var control = initControl("<win-pivot custom-left-header='customLeftHeader' custom-right-header='customRightHeader'>" +
-                                              "<win-pivot-item>Item1</win-pivot-item>" +
-                                          "</win-pivot>").winControl;
+                                     "<win-pivot-item>Item1</win-pivot-item>" +
+                                  "</win-pivot>").winControl;
 
         expect(control.customLeftHeader).toEqual(scope.customLeftHeader);
         expect(control.customRightHeader).toEqual(scope.customRightHeader);
+    });
+
+    it("should use the custom header directives", function () {
+        var control = initControl("<win-pivot>" +
+                                      "<win-pivot-left-header>LeftHeader</win-pivot-left-header>" +
+                                      "<win-pivot-item>Item1</win-pivot-item>" +
+                                      "<win-pivot-right-header>RightHeader</win-pivot-right-header>" +
+                                  "</win-pivot>").winControl;
+
+        expect(control.customLeftHeader.firstElementChild.innerHTML).toEqual("LeftHeader");
+        expect(control.customRightHeader.firstElementChild.innerHTML).toEqual("RightHeader");
     });
 
     afterEach(function () {

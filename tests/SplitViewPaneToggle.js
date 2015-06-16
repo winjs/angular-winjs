@@ -27,7 +27,7 @@ describe("SplitViewPaneToggle control directive tests", function () {
     });
 
     it("should use the splitView attribute", function () {
-        scope.splitView = new WinJS.UI.SplitView();
+        scope.splitView = new WinJS.UI.SplitView().element;
         var control = initControl("<win-split-view-pane-toggle split-view='splitView'></win-split-view-pane-toggle>").winControl;
 
         expect(control.splitView).toEqual(scope.splitView);

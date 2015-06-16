@@ -218,7 +218,6 @@ describe("ListView control directive tests", function () {
 
     it("should use the selection attribute", function () {
         scope.selection = [];
-        var gotAnimatingEvent = false;
         var compiledControl = initControl("<win-list-view item-data-source='testDataSource' selection='selection'>" +
                                               "<win-item-template>{{item.data.title}}</win-item-template>" +
                                           "</win-list-view>");
@@ -241,7 +240,6 @@ describe("ListView control directive tests", function () {
     it("should use the header and footer attributes", function () {
         scope.headerElement = document.createElement("div");
         scope.footerElement = document.createElement("div");
-        var gotAnimatingEvent = false;
         var compiledControl = initControl("<win-list-view item-data-source='testDataSource' header='headerElement' footer='footerElement'>" +
                                               "<win-item-template>{{item.data.title}}</win-item-template>" +
                                           "</win-list-view>");
@@ -255,6 +253,25 @@ describe("ListView control directive tests", function () {
             var control = compiledControl.winControl;
             expect(control.header).toEqual(scope.headerElement);
             expect(control.footer).toEqual(scope.footerElement);
+        });
+    });
+
+    it("should use an inline header and footer", function () {
+        var compiledControl = initControl("<win-list-view item-data-source='testDataSource'>" +
+                                              "<win-list-view-header>HeaderElement</win-list-view-header>" +
+                                                  "<win-item-template>{{item.data.title}}</win-item-template>" +
+                                              "<win-list-view-footer>FooterElement</win-list-view-footer>" +
+                                          "</win-list-view>");
+        var loadingComplete = waitForLoadingComplete(compiledControl.winControl);
+
+        waitsFor(function () {
+            return loadingComplete();
+        }, "the ListView's loadingStateChanged=complete event", testTimeout);
+
+        runs(function () {
+            var control = compiledControl.winControl;
+            expect(control.header.firstElementChild.innerHTML).toEqual("HeaderElement");
+            expect(control.footer.firstElementChild.innerHTML).toEqual("FooterElement");
         });
     });
 
