@@ -237,12 +237,14 @@ describe("ListView control directive tests", function () {
         });
     });
 
-    it("should use the header and footer attributes", function () {
-        scope.headerElement = document.createElement("div");
-        scope.footerElement = document.createElement("div");
-        var compiledControl = initControl("<win-list-view item-data-source='testDataSource' header='headerElement' footer='footerElement'>" +
+    it("should apply reorders back to the scope", function () {
+        var compiledControl = initControl("<win-list-view item-data-source='testDataSource' selection='selection'>" +
                                               "<win-item-template>{{item.data.title}}</win-item-template>" +
                                           "</win-list-view>");
+        var originalDataSource = [];
+        for (var i = 0; i < testDataSourceLength; i++) {
+            originalDataSource[i] = scope.testDataSource[i];
+        }
         var loadingComplete = waitForLoadingComplete(compiledControl.winControl);
 
         waitsFor(function () {
@@ -251,27 +253,18 @@ describe("ListView control directive tests", function () {
 
         runs(function () {
             var control = compiledControl.winControl;
-            expect(control.header).toEqual(scope.headerElement);
-            expect(control.footer).toEqual(scope.footerElement);
+            control.selection.set([testDataSourceLength - 1]);
+            control._currentMode()._reorderItems(0, control.selection, false, true, false);
+            loadingComplete = waitForLoadingComplete(compiledControl.winControl);
         });
-    });
-
-    it("should use an inline header and footer", function () {
-        var compiledControl = initControl("<win-list-view item-data-source='testDataSource'>" +
-                                              "<win-list-view-header>HeaderElement</win-list-view-header>" +
-                                                  "<win-item-template>{{item.data.title}}</win-item-template>" +
-                                              "<win-list-view-footer>FooterElement</win-list-view-footer>" +
-                                          "</win-list-view>");
-        var loadingComplete = waitForLoadingComplete(compiledControl.winControl);
 
         waitsFor(function () {
             return loadingComplete();
-        }, "the ListView's loadingStateChanged=complete event", testTimeout);
+        }, "the ListView's loadingStateChanged=complete event after reorder", testTimeout);
 
         runs(function () {
-            var control = compiledControl.winControl;
-            expect(control.header.firstElementChild.innerHTML).toEqual("HeaderElement");
-            expect(control.footer.firstElementChild.innerHTML).toEqual("FooterElement");
+            expect(originalDataSource[testDataSourceLength - 1]).toEqual(scope.testDataSource[0]);
+            expect(originalDataSource[0]).toEqual(scope.testDataSource[1]);
         });
     });
 
