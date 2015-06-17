@@ -705,6 +705,7 @@
         var api = {
             alignment: BINDING_property,
             anchor: BINDING_anchor,
+            disabled: BINDING_property,
             hidden: BINDING_property,
             placement: BINDING_property,
             onAfterHide: BINDING_event,
@@ -920,7 +921,7 @@
         };
     });
 
-    var listviewHelperDirectives = [
+    var listViewHelperDirectives = [
         {
             controlOptionName: "header",
             directiveName: "winListViewHeader"
@@ -980,7 +981,7 @@
             }],
             link: function ($scope, elements, attrs) {
                 var element = elements[0];
-                var control = initializeControl($scope, element, WinJS.UI.ListView, api, getHelperDirectives(element, listviewHelperDirectives));
+                var control = initializeControl($scope, element, WinJS.UI.ListView, api, getHelperDirectives(element, listViewHelperDirectives));
 
                 control.addEventListener("selectionchanged", function () {
                     var value = $scope["selection"];
@@ -997,7 +998,7 @@
             }
         };
     });
-    exists("ListView") && listviewHelperDirectives.forEach(function (directive) {
+    exists("ListView") && listViewHelperDirectives.forEach(function (directive) {
         createHelperDirective("winListView", directive.directiveName);
     });
 
@@ -1006,6 +1007,7 @@
             alignment: BINDING_property,
             anchor: BINDING_anchor,
             commands: BINDING_property,
+            disabled: BINDING_property,
             hidden: BINDING_property,
             placement: BINDING_property,
             onAfterHide: BINDING_event,

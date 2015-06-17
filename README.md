@@ -113,6 +113,7 @@ Examples of control usage
 ### Pivot and PivotItem
 
     <win-pivot>
+        <win-pivot-left-header>Custom Left Header</win-pivot-left-header>
         <win-pivot-item header="'First'">
           Pivots are useful for varied content
         </win-pivot-item>
@@ -122,6 +123,7 @@ Examples of control usage
         <win-pivot-item header="'Tail...'">
           Because it's only purpose is to show how to create a Pivot
         </win-pivot-item>
+        <win-pivot-right-header>Custom Right Header</win-pivot-right-header>
     </win-pivot>
 
 ### Rating
@@ -155,18 +157,14 @@ Examples of control usage
     </win-split-view>
 
 ### SplitView
-```js
-        angular.module("yourAngularApp", ["winjs"]).controller("yourController", function ($scope) {
-            $scope.splitViewElement = document.getElementById("splitView");
-        });
-```
-```html
+    angular.module("yourAngularApp", ["winjs"]).controller("yourController", function ($scope) {
+        $scope.splitViewElement = document.getElementById("splitView");
+    });
     <win-split-view-pane-toggle split-view="splitViewElement"></win-split-view-pane-toggle>
     <win-split-view id="splitView">
         <win-split-view-pane>SplitView Navigation Pane</win-split-view-pane>
         <win-split-view-content>SplitView Content Area</win-split-view-content>
     </win-split-view>
-```
 
 ### ToolBar
 
@@ -194,6 +192,15 @@ Examples of control usage
         <win-tooltip-content>This can have arbitrary content, like images...</win-tooltip-content>
         This has a tooltip, hover and see...
     </win-tooltip>
+
+### WinControl
+    <!-- If you ever need access to the WinJS winControl, you can expose it to your Angular scope by using the win-control directive -->
+    <win-pivot win-control="pivotWinControl">
+        <win-pivot-item header="'Sample'">
+          This Pivot is showing how to access its winControl through Angular
+        </win-pivot-item>
+    </win-pivot>
+
 
 Notes
 -----

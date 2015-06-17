@@ -33,6 +33,11 @@ describe("Flyout control directive tests", function () {
         expect(compiledControl.winControl.alignment).toEqual("left");
     });
 
+    it("should use the disabled attribute", function () {
+        var compiledControl = initControl("<win-flyout disabled='true'></win-flyout>");
+        expect(compiledControl.winControl.disabled).toBeTruthy();
+    });
+
     it("should use the placement attribute", function () {
         var compiledControl = initControl("<win-flyout placement=\"'right'\"></win-flyout>");
         expect(compiledControl.winControl.placement).toEqual("right");
