@@ -191,6 +191,38 @@ describe("Pivot control directive tests", function () {
         });
     });
 
+    it("should let ng-repeat add new pivot items", function () {
+        scope.items = [
+            { title: "Item0" },
+            { title: "Item1" }
+        ];
+        var compiledControl = initControl("<win-pivot>" +
+                                      "<win-pivot-item ng-repeat='item in items' header='item.title'></win-pivot-item>" +
+                                  "</win-pivot>");
+
+        var gotItemAnimationEndEvent = false;
+        compiledControl.addEventListener("itemanimationend", function () {
+            gotItemAnimationEndEvent = true;
+        }, false);
+        waitsFor(function () {
+            return gotItemAnimationEndEvent;
+        }, "the Pivot to load", testTimeout);
+
+        runs(function () {
+            var pivotHeaders = compiledControl.querySelectorAll(".win-pivot-header");
+            expect(pivotHeaders.length).toEqual(2);
+            expect(pivotHeaders[0].innerHTML).toEqual("Item0");
+            expect(pivotHeaders[1].innerHTML).toEqual("Item1");
+            scope.items.push({ title: "NewItem" });
+            scope.$digest();
+            pivotHeaders = compiledControl.querySelectorAll(".win-pivot-header");
+            expect(pivotHeaders.length).toEqual(3);
+            expect(pivotHeaders[0].innerHTML).toEqual("Item0");
+            expect(pivotHeaders[1].innerHTML).toEqual("Item1");
+            expect(pivotHeaders[2].innerHTML).toEqual("NewItem");
+        });
+    });
+
     afterEach(function () {
         var controls = document.querySelectorAll(".win-pivot");
         for (var i = 0; i < controls.length; i++) {

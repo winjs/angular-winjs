@@ -313,7 +313,7 @@
         };
     }
 
-    function initializeControl($scope, element, controlConstructor, api, extraOptions, onDestroyed) {
+    function removeDuplicateAttributes(element, api) {
         // WinJS has a couple naming collisions with actual DOM attributes. When the control we're constructing has
         // these attributes on its DOM element, we'll remove them so the WinJS control can function as appropriate.
         var attributesToRemove = ["checked", "disabled", "hidden", "id", "title", "type"];
@@ -322,6 +322,9 @@
                 element.removeAttribute(attributesToRemove[i]);
             }
         }
+    }
+    function initializeControl($scope, element, controlConstructor, api, extraOptions, onDestroyed) {
+        removeDuplicateAttributes(element, api);
 
         var control,
             controlDetails = initializeControlBindings($scope, api, element, function () { return control; });
@@ -1222,8 +1225,8 @@
                         }
                     }
                 }
-                this.addItem = deferred(function (item, index) {
-                    $scope.addItem(item, index);
+                this.addItem = deferred(function (item, index, addedCallback) {
+                    $scope.addItem(item, index, addedCallback);
                 });
                 this.removeItem = deferred(function (item) {
                     $scope.removeItem(item);
@@ -1239,8 +1242,9 @@
                 var control = initializeControl($scope, element, WinJS.UI.Pivot, api, helperDirectives);
 
                 element.appendChild(itemsHost);
-                $scope.addItem = function (item, index) {
+                $scope.addItem = function (item, index, addedCallback) {
                     control.items.splice(index, 0, item);
+                    addedCallback();
                 };
                 $scope.removeItem = function (item) {
                     control.items.splice(control.items.indexOf(item), 1);
@@ -1272,12 +1276,28 @@
             transclude: true,
             link: function ($scope, elements, attrs, pivot) {
                 var placeholder = elements[0],
-                    element = placeholder.firstElementChild,
-                    control = initializeControl($scope, element, WinJS.UI.PivotItem, api, {}, function () {
+                    element = placeholder.firstElementChild;
+
+                // PivotItems try to communicate with the Pivot control they're instantiated into. This is okay when the Pivot hasn't yet been constructed,
+                // but if it has been constructed this will cause problems inside of the Pivot, because the PivotItem will try to communicate with the
+                // Pivot before the Pivot has been made aware of its existence via this wrapper's addItem implementation.
+                // Ideally we would handle this by removing the PivotItem temporarily from the DOM and adding it in post-initialization, but if we do that
+                // we'll cause problems with other WinJS controls that may be hosted in the PivotItem. To solve this problem without doing DOM manipulation,
+                // we'll break the PivotItem initialization up into two stages: We will construct the PivotItem manually without any options and allow that blank
+                // PivotItem to be processed by its parent Pivot. Once that processing is done and addItem is completed, we'll complete the initialization by
+                // setting the PivotItem's options
+                removeDuplicateAttributes(element, api);
+                var control = initializeControl($scope, element, WinJS.UI.PivotItem, {}, {});
+
+                pivot.addItem(control, Array.prototype.indexOf.call(placeholder.parentNode.children, placeholder), function () {
+                    var controlDetails = initializeControlBindings($scope, api, element, function () { return control; });
+
+                    WinJS.UI.setOptions(control, controlDetails.options);
+                    addDestroyListener($scope, control, controlDetails.bindings, function () {
                         pivot.removeItem(control);
                     });
 
-                pivot.addItem(control, Array.prototype.indexOf.call(placeholder.parentNode.children, placeholder));
+                });
             }
         };
     });
