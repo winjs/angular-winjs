@@ -170,6 +170,27 @@ describe("Pivot control directive tests", function () {
         expect(control.customRightHeader.firstElementChild.innerHTML).toEqual("RightHeader");
     });
 
+    it("should render child WinJS controls that need to measure", function () {
+        var listViewLoaded;
+        scope.onListViewStateChanged = function (e) {
+            if (e.currentTarget.winControl && e.currentTarget.winControl.loadingState === "complete") {
+                listViewLoaded = true;
+            }
+        };
+        scope.childData = [1, 2, 3];
+        var compiledControl = initControl("<win-pivot>" +
+                                              "<win-pivot-item><win-list-view item-data-source='childData' on-loading-state-changed='onListViewStateChanged($event)'></win-list-view></win-pivot-item>" +
+                                          "</win-pivot>");
+
+        waitsFor(function () {
+            return listViewLoaded;
+        }, "the child ListView to load", testTimeout);
+
+        runs(function () {
+            expect(compiledControl.querySelectorAll(".win-item").length > 0);
+        });
+    });
+
     afterEach(function () {
         var controls = document.querySelectorAll(".win-pivot");
         for (var i = 0; i < controls.length; i++) {
