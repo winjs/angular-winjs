@@ -1279,8 +1279,8 @@
                     element = placeholder.firstElementChild;
 
                 // PivotItems try to communicate with the Pivot control they're instantiated into. This is okay when the Pivot hasn't yet been constructed,
-                // but if it has been constructed this will cause problems inside of the Pivot, because the PivotItem will try to communicate with the
-                // Pivot before the Pivot has been made aware of its existence via this wrapper's addItem implementation.
+                // but if it has been constructed this will cause problems inside of the Pivot, because the PivotItem will try to set its header in the Pivot
+                // before the Pivot has been made aware of its existence via this wrapper's addItem implementation.
                 // Ideally we would handle this by removing the PivotItem temporarily from the DOM and adding it in post-initialization, but if we do that
                 // we'll cause problems with other WinJS controls that may be hosted in the PivotItem. To solve this problem without doing DOM manipulation,
                 // we'll break the PivotItem initialization up into two stages: We will construct the PivotItem manually without any options and allow that blank
