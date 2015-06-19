@@ -40,10 +40,16 @@ Examples of control usage
 
     
 ### Content Dialog
-
-    <win-content-dialog primary-command-text="'Primary Command'" secondary-command-text="'Secondary Command '" title="'Title'">
+    angular.module("yourAngularApp", ["winjs"]).controller("yourController", function ($scope) {
+        $scope.contentDialogHidden = true;
+        $scope.showContentDialog = function () {
+            $scope.contentDialogHidden = false;
+        };
+    });
+    <win-content-dialog primary-command-text="'Primary Command'" secondary-command-text="'Secondary Command'" title="'Title'" hidden="contentDialogHidden">
         Add your content here
     </win-content-dialog>
+    <button ng-click="showContentDialog()">Show Dialog</button>
 
 ### DatePicker
 
