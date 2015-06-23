@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
         <id>Angular.WinJS</id>
-        <version>2.0.0</version>
+        <version>3.0.0</version>
         <authors>Microsoft Corporation and other contributors</authors>
         <licenseUrl>https://raw.githubusercontent.com/winjs/angular-winjs/master/License.txt</licenseUrl>
         <projectUrl>https://github.com/winjs/angular-winjs</projectUrl>
@@ -12,6 +12,6 @@
         <tags>winjs angular</tags>
     </metadata>
     <files>
-        <file src="..\js\angular-winjs.js" target="content\angular-winjs.js" />
+        <file src="js\angular-winjs.js" target="content\angular-winjs.js" />
     </files>
 </package>

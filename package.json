@@ -8,7 +8,7 @@
         "url": "https://github.com/winjs/angular-winjs/graphs/contributors"
     },
     "license": "MIT",
-    "version": "2.0.0",
+    "version": "3.0.0",
     "main": "js/angular-winjs.js",
     "scripts": {
         "test": "karma start karma.config.js"
