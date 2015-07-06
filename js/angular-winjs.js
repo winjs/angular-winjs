@@ -148,7 +148,7 @@
             }));
 
             var deferUpdate = false;
-            function updateOriginalArray() {
+            var updateOriginalArray = function () {
                 if (deferUpdate) {
                     return;
                 }
