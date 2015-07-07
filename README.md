@@ -209,7 +209,7 @@ Examples of control usage
         </win-pivot-item>
     </win-pivot>
 
-Running unit tests
+How to run unit tests
 -------------------------
 
 ### Install Node
