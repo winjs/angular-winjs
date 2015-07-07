@@ -203,9 +203,24 @@ Examples of control usage
     <!-- If you ever need access to the WinJS winControl, you can expose it to your Angular scope by using the win-control directive -->
     <win-pivot win-control="pivotWinControl">
         <win-pivot-item header="'Sample'">
-          This Pivot is showing how to access its winControl through Angular
+          This Pivot is showing how to access its winControl through Angular. 
+          The winControl can now be as a variable on the Angular scope, using the same name that was 
+          specified in the directive. In this case, $scope.pivotWinControl
         </win-pivot-item>
     </win-pivot>
+
+Running unit tests
+-------------------------
+
+### Install Node
+In order build WinJS, ensure that you have [Node.js](http://nodejs.org/download/) installed. 
+
+### Run the tests
+From the local angular-winjs repository
+```
+npm install
+npm test
+```
 
 
 Notes
