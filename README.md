@@ -226,4 +226,4 @@ npm test
 Notes
 -----
 
-For all of the controls you can bind to all public properties and events and the camel cased property names conveniently map to attributes.
+For all of the controls you can bind to: all public properties, events, and camel cased property names conveniently map to attributes.
