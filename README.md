@@ -204,7 +204,7 @@ Examples of control usage
     <win-pivot win-control="pivotWinControl">
         <win-pivot-item header="'Sample'">
           This Pivot is showing how to access its winControl through Angular. 
-          The winControl can now be as a variable on the Angular scope, using the same name that was 
+          The winControl can now be accessed as a variable on the Angular scope, using the same name that was 
           specified in the directive. In this case, $scope.pivotWinControl
         </win-pivot-item>
     </win-pivot>
@@ -226,4 +226,6 @@ npm test
 Notes
 -----
 
-For all of the controls you can bind to: all public properties, events, and camel cased property names conveniently map to attributes.
+For all of the controls you can bind to: all public events, and camel cased property names, conveniently map to attributes.
+- ```appBar.closedDisplayMode = "compact"``` maps to ```<win-app-bar closed-display-mode="'compact'">```
+- ```flipView.onpageselected = pagesSelected()``` maps to ```<win-flip-view on-page-selected="pageSelected()">```
