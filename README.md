@@ -155,14 +155,7 @@ Examples of control usage
         </win-list-view>
     </win-semantic-zoom>
 
-### SplitView
-
-    <win-split-view>
-        <win-split-view-pane>SplitView Navigation Pane</win-split-view-pane>
-        <win-split-view-content>SplitView Content Area</win-split-view-content>
-    </win-split-view>
-
-### SplitView
+### SplitView and optional SplitViewPaneToggle
     angular.module("yourAngularApp", ["winjs"]).controller("yourController", function ($scope) {
         $scope.splitViewElement = document.getElementById("splitView");
     });
