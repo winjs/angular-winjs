@@ -634,7 +634,7 @@
             }
         };
     });
-
+    
     exists("ContentDialog") && module.directive("winContentDialog", function () {
         var api = {
             hidden: BINDING_property,
@@ -666,16 +666,6 @@
                 control.addEventListener("afterhide", onVisibilityChanged);
                 control.addEventListener("aftershow", onVisibilityChanged);
             }
-        };
-    });
-
-    exists("NavBarContainer") && module.directive("winCommandTemplate", function () {
-        return {
-            require: ["^?winNavBarContainer"],
-            restrict: "E",
-            replace: true,
-            transclude: true,
-            compile: compileTemplate("template")
         };
     });
 
@@ -1100,88 +1090,6 @@
         };
     });
 
-    exists("NavBar") && module.directive("winNavBar", ['$parse', function ($parse) {
-        var api = {
-            closedDisplayMode: BINDING_property,
-            opened: BINDING_property,
-            placement: BINDING_property,
-            onAfterClose: BINDING_event,
-            onAfterOpen: BINDING_event,
-            onBeforeClose: BINDING_event,
-            onBeforeOpen: BINDING_event,
-            onChildrenProcessed: BINDING_event
-        };
-
-        return {
-            restrict: "E",
-            replace: true,
-            scope: getScopeForAPI(api),
-            template: "<DIV ng-transclude='true'></DIV>",
-            transclude: true,
-            link: function ($scope, elements, attrs) {
-                var control = initializeControl($scope, elements[0], WinJS.UI.NavBar, api);
-
-                function onVisibilityChanged() {
-                    apply($scope, function () {
-                        $scope["opened"] = control["opened"];
-                    });
-                }
-
-                control.addEventListener("afteropen", onVisibilityChanged);
-                control.addEventListener("afterclose", onVisibilityChanged);
-            }
-        };
-
-    }]);
-
-    exists("NavBarCommand") && module.directive("winNavBarCommand", function () {
-        var api = {
-            icon: BINDING_property,
-            label: BINDING_property,
-            location: BINDING_property,
-            splitButton: BINDING_property,
-            splitOpened: BINDING_property,
-            state: BINDING_property,
-            tooltip: BINDING_property
-        };
-        return {
-            restrict: "E",
-            replace: true,
-            scope: getScopeForAPI(api),
-            template: "<DIV ng-transclude='true'></DIV>",
-            transclude: true,
-            link: function ($scope, elements) {
-                initializeControl($scope, elements[0], WinJS.UI.NavBarCommand, api);
-            }
-        };
-    });
-
-    exists("NavBarContainer") && module.directive("winNavBarContainer", function () {
-        var api = {
-            currentIndex: BINDING_property,
-            data: BINDING_property,
-            fixedSize: BINDING_property,
-            layout: BINDING_property,
-            template: BINDING_property,
-            maxRows: BINDING_property,
-            onInvoked: BINDING_event,
-            onSplitToggle: BINDING_event
-        };
-        return {
-            restrict: "E",
-            replace: true,
-            scope: getScopeForAPI(api),
-            template: "<DIV ng-transclude='true'></DIV>",
-            transclude: true,
-            controller: ['$scope', function ($scope) {
-                proxy($scope, this, "template");
-            }],
-            link: function ($scope, elements) {
-                initializeControl($scope, elements[0], WinJS.UI.NavBarContainer, api);
-            }
-        };
-    });
-
     var pivotHelperDirectives = [
         {
             controlOptionName: "customLeftHeader",
@@ -1429,6 +1337,16 @@
         };
     });
 
+    exists("SplitView") && module.directive("winSplitViewContent", function () {
+        return {
+            require: "^winSplitView",
+            restrict: "E",
+            replace: true,
+            transclude: true,
+            template: "<div ng-transclude='true' class='win-split-view-content'></div>"
+        };
+    });
+
     exists("SplitViewPaneToggle") && module.directive("winSplitViewPaneToggle", function () {
         var api = {
             splitView: BINDING_property,
@@ -1446,13 +1364,22 @@
         };
     });
 
-    exists("SplitView") && module.directive("winSplitViewContent", function () {
+    exists("SplitViewCommand") && module.directive("winSplitViewCommand", function () {
+        var api = {
+            icon: BINDING_property,
+            label: BINDING_property,
+            tooltip: BINDING_property,
+            onInvoked: BINDING_event,
+        };
         return {
-            require: "^winSplitView",
             restrict: "E",
             replace: true,
+            scope: getScopeForAPI(api),
+            template: "<DIV ng-transclude='true'></DIV>",
             transclude: true,
-            template: "<div ng-transclude='true' class='win-split-view-content'></div>"
+            link: function ($scope, elements) {
+                initializeControl($scope, elements[0], WinJS.UI.SplitViewCommand, api);
+            }
         };
     });
 
