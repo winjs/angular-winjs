@@ -1,6 +1,5 @@
 {
     "name": "angular-winjs",
-    "version": "3.1.1",
     "homepage": "https://github.com/winjs/angular-winjs",
     "authors": [
         "Microsoft Corporation and other contributors"
@@ -21,6 +20,7 @@
         "tests",
         "package.json",
         "karma.config.js",
-        "*.nuspec"
+        "*.nuspec",
+        "Gruntfile.js"
     ]
 }
