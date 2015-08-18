@@ -106,16 +106,6 @@ Examples of control usage
         <win-menu-command label="'this would be a great place for ng-repeater...'"></win-menu-command>
     </win-menu>
 
-### NavBar and friends
-
-    <!-- Shows up on the top of the screen, use right-click or touch edgy gesture to show -->
-    <win-nav-bar>
-        <win-nav-bar-container>
-            <win-nav-bar-command label="'Home'" icon="'home'" tooltip="'Go home!!'"></win-nav-bar-command>
-            <win-nav-bar-command label="'Save'" icon="'save'"></win-nav-bar-command>
-        </win-nav-bar-container>
-    </win-nav-bar>
-
 ### Pivot and PivotItem
 
     <win-pivot>
@@ -161,7 +151,11 @@ Examples of control usage
     });
     <win-split-view-pane-toggle split-view="splitViewElement"></win-split-view-pane-toggle>
     <win-split-view id="splitView">
-        <win-split-view-pane>SplitView Navigation Pane</win-split-view-pane>
+        <win-split-view-pane>
+            SplitView Navigation Pane
+            <win-split-view-command label="'Home'" icon="'home'" on-invoked="goToHome()"></win-split-view-command>
+            <win-split-view-command label="'Settings'" icon="'settings'" on-invoked="goToSettings()"></win-split-view-command>
+        </win-split-view-pane>
         <win-split-view-content>SplitView Content Area</win-split-view-content>
     </win-split-view>
 
