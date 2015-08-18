@@ -206,7 +206,7 @@ How to run unit tests
 -------------------------
 
 ### Install Node
-In order Run tests, ensure that you have [Node.js](http://nodejs.org/download/) installed. 
+In order run tests, ensure that you have [Node.js](http://nodejs.org/download/) installed. 
 
 ### Run the tests
 From the local angular-winjs repository
@@ -221,4 +221,4 @@ Notes
 
 For all of the controls you can bind to: all public events, and camel cased property names, conveniently map to attributes.
 - ```appBar.closedDisplayMode = "compact"``` maps to ```<win-app-bar closed-display-mode="'compact'">```
-- ```flipView.onpageselected = pagesSelected(ev)``` maps to ```<win-flip-view on-page-selected="pageSelected($event)">```
+- ```flipView.onpageselected = pagesSelected()``` maps to ```<win-flip-view on-page-selected="pageSelected($event)">```
