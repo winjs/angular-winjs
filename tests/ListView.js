@@ -164,6 +164,16 @@ describe("ListView control directive tests", function () {
         var compiledControl = initControl("<win-list-view max-deferred-item-cleanup='10'></win-list-view>");
         expect(compiledControl.winControl.maxDeferredItemCleanup).toEqual(10);
     });
+    
+    it("should use the maxLeadingPages attribute", function () {
+        var compiledControl = initControl("<win-list-view max-leading-pages='7'></win-list-view>");
+        expect(compiledControl.winControl.maxLeadingPages).toEqual(7);
+    });
+    
+    it("should use the maxTrailingPages attribute", function () {
+        var compiledControl = initControl("<win-list-view max-trailing-pages='7'></win-list-view>");
+        expect(compiledControl.winControl.maxTrailingPages).toEqual(7);
+    });
 
     it("should use the currentItem attribute", function () {
         scope.testCurrentItem = {
@@ -200,6 +210,19 @@ describe("ListView control directive tests", function () {
         runs(function () {
             expect(compiledControl.winControl.layout instanceof WinJS.UI.ListLayout).toBeTruthy();
         });
+    });
+    
+    it("should use the onAccessibilityAnnotationComplete event", function () {
+        var gotEvent = false;
+        scope.handler = function (e) {
+            gotEvent = true;
+        };
+        var compiledControl = initControl("<win-list-view item-data-source='testDataSource' on-accessibility-annotation-complete='handler($event)'>" +
+                                              "<win-item-template>{{item.data.title}}</win-item-template>" +
+                                          "</win-list-view>");
+        waitsFor(function () {
+            return gotEvent;
+        }, "the ListView's onAccessibilityAnnotationComplete event", testTimeout);
     });
 
     it("should use the onContentAnimating event", function () {

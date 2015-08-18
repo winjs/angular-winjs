@@ -8,7 +8,7 @@
         "url": "https://github.com/winjs/angular-winjs/graphs/contributors"
     },
     "license": "MIT",
-    "version": "3.1.1",
+    "version": "4.0.0",
     "main": "js/angular-winjs.js",
     "scripts": {
         "test": "karma start karma.config.js"
@@ -37,7 +37,7 @@
     "devDependencies": {
         "angular-mocks": "~1.3.13",
         "karma": "~0.10",
-        "winjs":  "4.1.x",
+        "winjs":  "4.2.x",
         "grunt": "^0.4.5",
         "grunt-contrib-clean": "^0.6.0",
         "grunt-contrib-compress": "^0.13.0",

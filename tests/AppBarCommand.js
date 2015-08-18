@@ -91,8 +91,8 @@ describe("AppBarCommand control directive tests", function () {
                                           "</win-app-bar>");
 
         var commands = compiledControl.querySelectorAll(".win-command");
-        expect(commands[0].style.display).toEqual("none");
-        expect(commands[1].style.display).toNotEqual("none");
+        expect(commands[0].winControl.hidden).toBeTruthy();
+        expect(commands[1].winControl.hidden).toBeFalsy();
     });
 
     it("should use the icon attribute on AppBarCommands", function () {
