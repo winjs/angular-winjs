@@ -28,7 +28,7 @@ Examples of control usage
         <win-app-bar-separator></win-app-bar-separator>
         <win-app-bar-command icon="'save'" label="'Save'"></win-app-bar-command>
         <win-app-bar-content>
-            <win-search-box placeholder-text="'Search'"></win-search-box>
+            <win-auto-suggest-box placeholder-text="'Search'"></win-auto-suggest-box>
         </win-app-bar-content>
         <win-app-bar-command type="'toggle'" icon="'world'" label="'Planet'"></win-app-bar-command>
     </win-app-bar>
