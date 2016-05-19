@@ -9,7 +9,7 @@
     },
     "license": "MIT",
     "version": "4.4.0",
-    "main": "js/angular-winjs.js",
+    "main": "js/index.js",
     "scripts": {
         "test": "karma start karma.config.js"
     },
